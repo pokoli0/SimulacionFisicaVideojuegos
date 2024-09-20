@@ -10,7 +10,7 @@
 
 #include <iostream>
 
-std::string display_text = "This is a test";
+std::string display_text = "pokoli0";
 
 
 using namespace physx;
@@ -29,6 +29,12 @@ PxPvd*                  gPvd        = NULL;
 PxDefaultCpuDispatcher*	gDispatcher = NULL;
 PxScene*				gScene      = NULL;
 ContactReportCallback gContactReportCallback;
+
+// **** items ****
+RenderItem* sphere = NULL;
+
+// **** transforms ****
+PxTransform* sphereT;
 
 
 // Initialize physics engine
@@ -54,13 +60,20 @@ void initPhysics(bool interactive)
 	sceneDesc.filterShader = contactReportFilterShader;
 	sceneDesc.simulationEventCallback = &gContactReportCallback;
 	gScene = gPhysics->createScene(sceneDesc);
-	}
+
+	// **** init renderItems **** 
+	
+	// Sphere
+	sphereT = new PxTransform(0, 40.0f, 0);
+	sphere = new RenderItem(CreateShape(PxSphereGeometry(10)), sphereT, Vector4(0.3, 0.5, 0.4, 1));
+
+}
 
 
 // Function to configure what happens in each step of physics
 // interactive: true if the game is rendering, false if it offline
 // t: time passed since last call in milliseconds
-void stepPhysics(bool interactive, double t)
+void stepPhysics(bool interactive, double t) // es como el update
 {
 	PX_UNUSED(interactive);
 
@@ -73,6 +86,9 @@ void stepPhysics(bool interactive, double t)
 void cleanupPhysics(bool interactive)
 {
 	PX_UNUSED(interactive);
+
+	// **** deregisters **** 
+	DeregisterRenderItem(sphere);
 
 	// Rigid Body ++++++++++++++++++++++++++++++++++++++++++
 	gScene->release();
@@ -87,7 +103,7 @@ void cleanupPhysics(bool interactive)
 	}
 
 // Function called when a key is pressed
-void keyPress(unsigned char key, const PxTransform& camera)
+void keyPress(unsigned char key, const PxTransform& camera) //input 
 {
 	PX_UNUSED(camera);
 
