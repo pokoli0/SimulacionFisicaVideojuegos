@@ -32,9 +32,18 @@ ContactReportCallback gContactReportCallback;
 
 // **** items ****
 RenderItem* sphere = NULL;
+RenderItem* xSphere = NULL;
+RenderItem* ySphere = NULL;
+RenderItem* zSphere = NULL;
+RenderItem* originSphere = NULL;
 
 // **** transforms ****
-PxTransform* sphereT;
+PxTransform* sphereTf;
+PxTransform* xTf;
+PxTransform* yTf;
+PxTransform* zTf;
+PxTransform* originTf;
+
 
 
 // Initialize physics engine
@@ -64,9 +73,18 @@ void initPhysics(bool interactive)
 	// **** init renderItems **** 
 	
 	// Sphere
-	sphereT = new PxTransform(0, 40.0f, 0);
-	sphere = new RenderItem(CreateShape(PxSphereGeometry(10)), sphereT, Vector4(0.3, 0.5, 0.4, 1));
+	sphereTf = new PxTransform(0, 40.0f, 0);
+	sphere = new RenderItem(CreateShape(PxSphereGeometry(10)), sphereTf, Vector4(0.3, 0.5, 0.4, 1));
 
+	// Ejes XYZ
+	xTf = new PxTransform(10, 0, 0);
+	xSphere = new RenderItem(CreateShape(PxSphereGeometry(1)), xTf, Vector4(1, 0, 0, 1));
+	yTf = new PxTransform(0, 10, 0);
+	ySphere = new RenderItem(CreateShape(PxSphereGeometry(1)), yTf, Vector4(0, 1, 0, 1));
+	zTf = new PxTransform(0, 0, 10);
+	zSphere = new RenderItem(CreateShape(PxSphereGeometry(1)), zTf, Vector4(0, 0, 1, 1));
+	originTf = new PxTransform(0, 0, 0);
+	originSphere = new RenderItem(CreateShape(PxSphereGeometry(1)), originTf, Vector4(1, 1, 1, 1));
 }
 
 
@@ -89,6 +107,9 @@ void cleanupPhysics(bool interactive)
 
 	// **** deregisters **** 
 	DeregisterRenderItem(sphere);
+	DeregisterRenderItem(xSphere);
+	DeregisterRenderItem(ySphere);
+	DeregisterRenderItem(zSphere);
 
 	// Rigid Body ++++++++++++++++++++++++++++++++++++++++++
 	gScene->release();
