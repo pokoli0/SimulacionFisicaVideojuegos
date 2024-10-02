@@ -8,6 +8,8 @@
 #include "RenderUtils.hpp"
 #include "callbacks.hpp"
 
+#include "Vector3D.h"
+
 #include <iostream>
 
 std::string display_text = "pokoli0";

@@ -1,6 +1,8 @@
 #include <iostream>
 #include <cmath>
 
+#pragma once
+
 using namespace std;
 
 class Vector3D {
