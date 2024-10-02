@@ -1,52 +1,70 @@
+#include <iostream>
 #include <cmath>
-
-#pragma once
 
 using namespace std;
 
-class Vector3D
-{
-public:
-
-	Vector3D(float x_, float y_, float z_) {
-		x = x_;
-		y = y_;
-		z = z_;
-	};
-
-#pragma region getters & setters
-	void setX(float n) { x_ = n;}
-	void setY(float n) { y_ = n;}
-	void setZ(float n) { z_ = n;}
-	float getX() { return x_;}
-	float getY() { return y_;}
-	float getZ() { return z_;}
-#pragma endregion
-
-	// magnitud
-	float modulo() {
-		return sqrt(x * x + y * y + z * z);
-	}
-
-	// dividir cada componente entre el modulo
-	void normaliza() {
-		float mod = modulo();
-		if (mod != 0) {
-			x /= mod;
-			y /= mod;
-			z /= mod;
-		}
-	}
-	
-	float prodEscalar(Vector3D& v) {
-		return(x * v.x + y * v.y + z * v.z);
-	}
-
-
-
-
+class Vector3D {
 private:
+    double x, y, z;
 
-	float x, y, z;
+public:
+    // Constructor
+    Vector3D(double x = 0, double y = 0, double z = 0) : x(x), y(y), z(z) {}
+
+    // Getters
+    double getX() const { return x; }
+    double getY() const { return y; }
+    double getZ() const { return z; }
+
+    // Setters
+    void setX(double newX) { x = newX; }
+    void setY(double newY) { y = newY; }
+    void setZ(double newZ) { z = newZ; }
+
+    // Método para obtener el módulo del vector
+    double modulo() const {
+        return sqrt(x * x + y * y + z * z);
+    }
+
+    // Método para normalizar el vector
+    Vector3D normalizar() const {
+        double m = modulo();
+        if (m == 0) cout << "No se puede normalizar" << endl;
+        return Vector3D(x / m, y / m, z / m);
+    }
+
+    // Producto escalar con otro vector
+    double productoEscalar(const Vector3D& otro) const {
+        return x * otro.x + y * otro.y + z * otro.z;
+    }
+
+    // Multiplicar el vector por un escalar
+    Vector3D operator*(double escalar) const {
+        return Vector3D(x * escalar, y * escalar, z * escalar);
+    }
+
+    // Sobrecarga del operador +
+    Vector3D operator+(const Vector3D& otro) const {
+        return Vector3D(x + otro.x, y + otro.y, z + otro.z);
+    }
+
+    // Sobrecarga del operador -
+    Vector3D operator-(const Vector3D& otro) const {
+        return Vector3D(x - otro.x, y - otro.y, z - otro.z);
+    }
+
+    // Sobrecarga del operador =
+    Vector3D& operator=(const Vector3D& otro) {
+        if (this != &otro) {
+            x = otro.x;
+            y = otro.y;
+            z = otro.z;
+        }
+        return *this;
+    }
+
+    // Método para mostrar el vector
+    void imprimir() const {
+        std::cout << "Vector3D(" << x << ", " << y << ", " << z << ")\n";
+    }
 };
-
