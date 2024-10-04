@@ -93,7 +93,7 @@ void initPhysics(bool interactive)
 	//originSphere = new RenderItem(CreateShape(PxSphereGeometry(1)), originTf, Vector4(1, 1, 1, 1));
 
 	// Particle
-	particle = new Particle(PxVec3(0, 0, 0), PxVec3(0, 0, 0), PxVec3(5, 0, 0));
+	//particle = new Particle(PxVec3(0, 0, 0), PxVec3(0, 0, 0), PxVec3(5, 0, 0));
 
 }
 
@@ -105,7 +105,9 @@ void stepPhysics(bool interactive, double t) // es como el update
 {
 	PX_UNUSED(interactive);
 
-	particle->Integrate(t);
+	if (particle != nullptr) {
+		particle->Integrate(t);
+	}
 
 	gScene->simulate(t);
 	gScene->fetchResults(true);
@@ -143,7 +145,9 @@ void keyPress(unsigned char key, const PxTransform& camera) //input
 
 	switch(toupper(key))
 	{
-	//case 'B': break;
+	case 'B': 
+		particle = new Particle(PxVec3(0, 0, 0), PxVec3(0, 0, 0), PxVec3(5, 0, 0));
+		break;
 	//case ' ':	break;
 	case ' ':
 	{

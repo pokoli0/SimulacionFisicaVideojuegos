@@ -23,4 +23,6 @@ private:
 	double damping;
 
 	RenderItem* renderItem = nullptr;
+
+
 };
