@@ -48,7 +48,7 @@ PxTransform* zTf;
 PxTransform* originTf;
 
 // Apartado 1
-Particle* particle = nullptr;
+vector<Particle*> proyectiles;
 
 
 
@@ -105,8 +105,8 @@ void stepPhysics(bool interactive, double t) // es como el update
 {
 	PX_UNUSED(interactive);
 
-	if (particle != nullptr) {
-		particle->Integrate(t);
+	for (int i = 0; i < proyectiles.size(); i++) {
+		proyectiles[i]->Integrate(t);
 	}
 
 	gScene->simulate(t);
@@ -136,7 +136,13 @@ void cleanupPhysics(bool interactive)
 	transport->release();
 	
 	gFoundation->release();
-	}
+}
+
+void InstanciaParticula() {
+	Particle* particle = new Particle(PxVec3(GetCamera()->getTransform().p), PxVec3(GetCamera()->getDir() * 10), PxVec3(0, -5, 0));
+	proyectiles.push_back(particle);
+	cout << "Particulas: " << proyectiles.size() << endl;
+}
 
 // Function called when a key is pressed
 void keyPress(unsigned char key, const PxTransform& camera) //input 
@@ -146,7 +152,7 @@ void keyPress(unsigned char key, const PxTransform& camera) //input
 	switch(toupper(key))
 	{
 	case 'B': 
-		particle = new Particle(PxVec3(0, 0, 0), PxVec3(0, 0, 0), PxVec3(5, 0, 0));
+		InstanciaParticula();
 		break;
 	//case ' ':	break;
 	case ' ':

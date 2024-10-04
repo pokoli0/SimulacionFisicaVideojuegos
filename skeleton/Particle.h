@@ -24,5 +24,5 @@ private:
 
 	RenderItem* renderItem = nullptr;
 
-
+	double mass;
 };
