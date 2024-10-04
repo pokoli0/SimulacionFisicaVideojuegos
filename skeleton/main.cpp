@@ -9,6 +9,7 @@
 #include "callbacks.hpp"
 
 #include "Vector3D.h"
+#include "Particle.h"
 
 #include <iostream>
 
@@ -46,6 +47,9 @@ PxTransform* yTf;
 PxTransform* zTf;
 PxTransform* originTf;
 
+// Apartado 1
+Particle* particle = nullptr;
+
 
 
 // Initialize physics engine
@@ -75,18 +79,22 @@ void initPhysics(bool interactive)
 	// **** init renderItems **** 
 	
 	// Sphere
-	sphereTf = new PxTransform(0, 40.0f, 0);
-	sphere = new RenderItem(CreateShape(PxSphereGeometry(10)), sphereTf, Vector4(0.3, 0.5, 0.4, 1));
+	//sphereTf = new PxTransform(0, 40.0f, 0);
+	//sphere = new RenderItem(CreateShape(PxSphereGeometry(10)), sphereTf, Vector4(0.3, 0.5, 0.4, 1));
 
-	// Ejes XYZ
-	xTf = new PxTransform(10, 0, 0);
-	xSphere = new RenderItem(CreateShape(PxSphereGeometry(1)), xTf, Vector4(1, 0, 0, 1));
-	yTf = new PxTransform(0, 10, 0);
-	ySphere = new RenderItem(CreateShape(PxSphereGeometry(1)), yTf, Vector4(0, 1, 0, 1));
-	zTf = new PxTransform(0, 0, 10);
-	zSphere = new RenderItem(CreateShape(PxSphereGeometry(1)), zTf, Vector4(0, 0, 1, 1));
-	originTf = new PxTransform(0, 0, 0);
-	originSphere = new RenderItem(CreateShape(PxSphereGeometry(1)), originTf, Vector4(1, 1, 1, 1));
+	//// Ejes XYZ
+	//xTf = new PxTransform(10, 0, 0);
+	//xSphere = new RenderItem(CreateShape(PxSphereGeometry(1)), xTf, Vector4(1, 0, 0, 1));
+	//yTf = new PxTransform(0, 10, 0);
+	//ySphere = new RenderItem(CreateShape(PxSphereGeometry(1)), yTf, Vector4(0, 1, 0, 1));
+	//zTf = new PxTransform(0, 0, 10);
+	//zSphere = new RenderItem(CreateShape(PxSphereGeometry(1)), zTf, Vector4(0, 0, 1, 1));
+	//originTf = new PxTransform(0, 0, 0);
+	//originSphere = new RenderItem(CreateShape(PxSphereGeometry(1)), originTf, Vector4(1, 1, 1, 1));
+
+	// Particle
+	particle = new Particle(PxVec3(0, 0, 0), PxVec3(0, 0, 0), PxVec3(5, 0, 0));
+
 }
 
 
@@ -96,6 +104,8 @@ void initPhysics(bool interactive)
 void stepPhysics(bool interactive, double t) // es como el update
 {
 	PX_UNUSED(interactive);
+
+	particle->Integrate(t);
 
 	gScene->simulate(t);
 	gScene->fetchResults(true);
@@ -108,10 +118,11 @@ void cleanupPhysics(bool interactive)
 	PX_UNUSED(interactive);
 
 	// **** deregisters **** 
-	DeregisterRenderItem(sphere);
-	DeregisterRenderItem(xSphere);
-	DeregisterRenderItem(ySphere);
-	DeregisterRenderItem(zSphere);
+	//DeregisterRenderItem(sphere);
+	//DeregisterRenderItem(xSphere);
+	//DeregisterRenderItem(ySphere);
+	//DeregisterRenderItem(zSphere);
+	
 
 	// Rigid Body ++++++++++++++++++++++++++++++++++++++++++
 	gScene->release();
