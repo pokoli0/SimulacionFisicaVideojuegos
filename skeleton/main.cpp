@@ -10,6 +10,7 @@
 
 #include "Vector3D.h"
 #include "Particle.h"
+#include "ParticleSystem.h"
 
 #include <iostream>
 
@@ -50,6 +51,8 @@ PxTransform* originTf;
 // Apartado 1
 vector<Particle*> proyectiles;
 
+// Apt 2
+ParticleSystem* pSystem = NULL;
 
 
 // Initialize physics engine
@@ -95,6 +98,8 @@ void initPhysics(bool interactive)
 	// Particle
 	//particle = new Particle(PxVec3(0, 0, 0), PxVec3(0, 0, 0), PxVec3(5, 0, 0));
 
+	// Particle System
+	pSystem = new ParticleSystem(PxVec3(0, 0, 0));
 }
 
 
@@ -108,6 +113,8 @@ void stepPhysics(bool interactive, double t) // es como el update
 	for (int i = 0; i < proyectiles.size(); i++) {
 		proyectiles[i]->Integrate(t);
 	}
+
+	pSystem->update(t);
 
 	gScene->simulate(t);
 	gScene->fetchResults(true);

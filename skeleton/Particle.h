@@ -13,6 +13,8 @@ public:
 
 	void Integrate(double t);
 
+	double getLifeTime() { return lifeTime; }
+
 private:
 	physx::PxVec3 vel;
 	physx::PxVec3 accel;
@@ -25,4 +27,8 @@ private:
 	RenderItem* renderItem = nullptr;
 
 	double mass;
+
+	double lifeTime;
+
+	bool isAlive;
 };
