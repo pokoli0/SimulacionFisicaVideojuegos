@@ -68,7 +68,7 @@ void Particle::Integrate(double t, IntegrationType type)
 void Particle::isAlive(double t, ParticleSystem& system, IntegrationType type)
 {
 	Integrate(t, type);
-	if (updateLifeTime(t) || !isOnRatio()) { // ver donde se modifica lifetime
+	if (updateLifeTime(t) || !isOnRatio()) {
 		system.destroyParticle(this);
 	}
 }

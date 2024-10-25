@@ -3,6 +3,8 @@
 UniformGenerator::UniformGenerator(Particle* p, float rate, float range, float spawnRange, GenDistribution dist)
     : ParticleGenerator(p, rate, spawnRange, dist)
 {
+    cout << "Uniform generator created." << endl;
+
     PxVec3 vel = p->getVelocity();
     PxVec3 desv = PxVec3(range, range, range);
 

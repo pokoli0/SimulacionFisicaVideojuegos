@@ -27,8 +27,9 @@ void ParticleSystem::update(double t)
 	toErase.clear();
 
 	for (auto g : gList) {
-		if (g != nullptr)
+		if (g != nullptr) {
 			g->update(t, *this);
+		}
 	}
 
 	for (auto it = pList.begin(); it != pList.end(); ) {

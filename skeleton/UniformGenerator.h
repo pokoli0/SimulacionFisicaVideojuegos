@@ -1,10 +1,12 @@
 #pragma once
 #include "ParticleGenerator.h"
 #include <random>
+#include <iostream>
 
 class Particle;
 
 using namespace physx;
+using namespace std;
 
 class UniformGenerator : public ParticleGenerator
 {

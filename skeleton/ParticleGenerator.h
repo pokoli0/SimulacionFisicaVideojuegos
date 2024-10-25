@@ -15,17 +15,8 @@ enum GenDistribution {
 
 class ParticleGenerator
 {
-protected:
-	mt19937 randomizer;
-	float particlePerSecond;
-	float accumulatedTime = 0.0f;
-	float emissionRange;
-	GenDistribution distribution;
-
-	Particle particle;
-
 public:
-	ParticleGenerator(Particle* p, float rate, float spawnR, GenDistribution sp);
+	ParticleGenerator(Particle* p, float particleSecond, float spawnR, GenDistribution sp);
 
 	virtual Particle* emit() = 0;
 
@@ -35,5 +26,15 @@ public:
 
 	// getters
 	float getParticlePerSecond() const { return particlePerSecond; }
+
+protected:
+	mt19937 randomizer;
+	float particlePerSecond;
+	float accumulatedTime = 0.0f;
+	float emissionRange;
+	GenDistribution distribution;
+
+	Particle particle;
+
 };
 

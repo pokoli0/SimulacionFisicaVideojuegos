@@ -1,10 +1,10 @@
 #include "ParticleGenerator.h"
 #include "ParticleSystem.h"
 
-ParticleGenerator::ParticleGenerator(Particle* p, float rate, float spawnR, GenDistribution sp)
-    : particle(*p), particlePerSecond(rate), emissionRange(spawnR), distribution(sp)
+ParticleGenerator::ParticleGenerator(Particle* p, float particleSecond, float spawnR, GenDistribution sp)
+    : particle(*p), particlePerSecond(particleSecond), emissionRange(spawnR), distribution(sp)
 {
-    std::random_device rd;
+    random_device rd;
     randomizer.seed(rd());
 }
 
@@ -31,20 +31,18 @@ PxVec3 ParticleGenerator::calculatePosition()
     return endPos;
 }
 
-void ParticleGenerator::update(double t, ParticleSystem& pS) {
-    // Acumula el tiempo
-    accumulatedTime += t;
+void ParticleGenerator::update(double t, ParticleSystem& system)
+{
+    int particles = static_cast<int>(accumulatedTime * particlePerSecond);
 
-    // Particulas a emitir
-    int particlesToEmit = static_cast<int>(accumulatedTime * particlePerSecond);
-
-    for (int i = 0; i < particlesToEmit; ++i) {
+    for (int i = 0; i < particles; i++) {
         Particle* newParticle = emit();
-        if (newParticle) {
-            pS.addParticle(newParticle);
+        if (!newParticle) {
+            cout << "noNueva" << endl;
         }
+        else system.addParticle(newParticle);
     }
 
-    // Restar el tiempo emitido
-    accumulatedTime -= particlesToEmit / particlePerSecond;
+    accumulatedTime += t;
+    accumulatedTime -= particles / particlePerSecond;
 }
