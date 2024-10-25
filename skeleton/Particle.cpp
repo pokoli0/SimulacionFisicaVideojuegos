@@ -1,12 +1,15 @@
 #include "Particle.h"
+#include <math.h>
+#include <iostream>
+#include "ParticleSystem.h"
 
-Particle::Particle(physx::PxVec3 pos, physx::PxVec3 velo, physx::PxVec3 accele) : pose(pos), vel(velo), accel(accele)
+Particle::Particle(PxVec3 pos, PxVec3 velo, PxVec3 accele) : pose(pos), vel(velo), accel(accele)
 {
 	damping = 0.99;
 
-	physx::PxSphereGeometry sphere(1);
-	physx::PxShape* shape = CreateShape(sphere);
-	transform = new physx::PxTransform(pose);
+	PxSphereGeometry sphere(1);
+	PxShape* shape = CreateShape(sphere);
+	transform = new PxTransform(pose);
 
 	renderItem = new RenderItem(shape, transform, Vector4(1, 0.5, 1, 1));
 
@@ -20,12 +23,32 @@ Particle::~Particle()
 	delete transform;
 }
 
-void Particle::Integrate(double t)
+void Particle::Integrate(double t, IntegrationType type)
 {
-	vel = vel * pow(damping, t) + accel * t;
-	vel = vel * pow(damping, t) + accel * t;
+	if (type == EULER) {
+		vel = vel + accel * t;
+		vel = vel * pow(damping, t);
+		pose = pose + vel * t;
+	}
+	else { // semieuler
+		pose = pose + vel * t;
+		vel = vel + accel * t;
+		vel = vel * pow(damping, t);
+	}
+}
 
-	pose = pose + vel * t;
+bool Particle::isAlive(double t, ParticleSystem& system)
+{
+	alive = true;
+	timeAlive += t;
+	if (timeAlive > lifeTime || !isOnRatio()) {
+		system.destroyParticle(this);
+		alive = false;
+	}
+	return alive;
+}
 
-	transform->p = transform->p + vel * t;
+bool Particle::isOnRatio()
+{
+	return (pose - center).magnitude() < ratio;
 }

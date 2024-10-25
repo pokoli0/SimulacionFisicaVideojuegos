@@ -99,7 +99,22 @@ void initPhysics(bool interactive)
 	//particle = new Particle(PxVec3(0, 0, 0), PxVec3(0, 0, 0), PxVec3(5, 0, 0));
 
 	// Particle System
-	pSystem = new ParticleSystem(PxVec3(0, 0, 0));
+	pSystem = new ParticleSystem();
+
+	pSystem->addGenerator(UNIFORME, 
+		Vector3(0, 0, 0), //pos
+		Vector3(0, 20, 0), //direction
+		40, //rate
+		PxVec3(0,0,0),// desv - aqui no hace falta
+		20.0f, 
+		1.0f, 
+		GenDistribution::UNIFORMDIST,
+		1000.0f, //rat
+		2); //lifetime
+
+	//pSystem->addGenerator(NORMAL, Vector3(100, 0, -100), Vector3(0, 20, 0), 1000, 
+	//	Vector3(10, 0.0001, 10), // desv
+	//	1.0f, GenDistribution::UNIFORMDIST, 50);
 }
 
 
@@ -111,13 +126,14 @@ void stepPhysics(bool interactive, double t) // es como el update
 	PX_UNUSED(interactive);
 
 	for (int i = 0; i < proyectiles.size(); i++) {
-		proyectiles[i]->Integrate(t);
-	}
 
-	pSystem->update(t);
+		proyectiles[i]->Integrate(t, Particle::IntegrationType::SEMIEULER);
+	}
 
 	gScene->simulate(t);
 	gScene->fetchResults(true);
+
+	pSystem->update(t);
 }
 
 // Function to clean data
@@ -131,7 +147,10 @@ void cleanupPhysics(bool interactive)
 	//DeregisterRenderItem(xSphere);
 	//DeregisterRenderItem(ySphere);
 	//DeregisterRenderItem(zSphere);
-	
+	delete pSystem;	
+	for (auto p : proyectiles) {
+		delete p;
+	}
 
 	// Rigid Body ++++++++++++++++++++++++++++++++++++++++++
 	gScene->release();
