@@ -16,23 +16,32 @@ public:
 	};
 
 	Particle(PxVec3 pos, PxVec3 velo, PxVec3 accele);
-	virtual ~Particle();
+
+	Particle(PxVec3 pos, PxVec3 velo, PxVec3 accele, double lifetime);
+	Particle(Particle const& p);
+	~Particle();
+
 
 	void Integrate(double t, IntegrationType type);
 	void isAlive(double t, ParticleSystem& system, IntegrationType type);
 
 	bool isOnRatio();
 
+	bool updateLifeTime(double t);
+
 	// getters & setters
 	double getLifeTime() const { return lifeTime; }
 	void setLifeTime(double t) { lifeTime = t; }
+
 	list<Particle*>::iterator getIterator() const { return iterator; }
 	void setIterator(list<Particle*>::iterator i) { iterator = i; }
 
-	PxVec3 getPosition() const { return pose.p; }
-	void setPosition(PxVec3 p) { pose.p = p; }
+	void setPosition(PxVec3 p) { transform.p = p; }
+	PxVec3 getPosition() { return transform.p; }
+
 	void setVelocity(PxVec3 v) { vel = v; }
 	PxVec3 getVelocity() const { return vel; }
+
 	void setAcceleration(PxVec3 a) { accel = a; }
 
 	void setRatio(float r) { ratio = r; }
@@ -42,9 +51,9 @@ protected:
 
 	PxVec3 vel;
 	PxVec3 accel;
-	PxTransform pose;
+	//PxTransform pose;
 
-	PxTransform* transform = nullptr;
+	PxTransform transform;
 
 	double damping;
 
@@ -53,9 +62,7 @@ protected:
 	double mass;
 
 	double lifeTime;
-	double timeAlive;
-
-	bool alive;
+	//double timeAlive;
 
 	PxVec3 center;
 	float ratio;
