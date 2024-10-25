@@ -19,10 +19,10 @@ Particle* UniformGenerator::emit()
 
     PxVec3 randomVelocity(distX(randomizer), distY(randomizer), distZ(randomizer));
 
-    Particle* newParticle = new Particle(particle);
+    Particle* p = new Particle(particle);
 
-    newParticle->setVelocity(randomVelocity);
-    newParticle->setPosition(calculatePosition());
+    p->setVelocity(randomVelocity);
+    p->setPosition(calculatePosition());
 
-    return newParticle;
+    return p;
 }

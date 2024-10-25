@@ -33,7 +33,7 @@ void ParticleSystem::update(double t)
 
 	for (auto it = pList.begin(); it != pList.end(); ) {
 		if (*it != nullptr) {
-			(*it)->isAlive(t, *this);
+			(*it)->isAlive(t, *this, Particle::SEMIEULER);
 			it++;
 		}
 	}

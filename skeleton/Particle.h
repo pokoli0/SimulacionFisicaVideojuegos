@@ -16,10 +16,10 @@ public:
 	};
 
 	Particle(PxVec3 pos, PxVec3 velo, PxVec3 accele);
-	~Particle();
+	virtual ~Particle();
 
 	void Integrate(double t, IntegrationType type);
-	bool isAlive(double t, ParticleSystem& system);
+	void isAlive(double t, ParticleSystem& system, IntegrationType type);
 
 	bool isOnRatio();
 
@@ -29,8 +29,8 @@ public:
 	list<Particle*>::iterator getIterator() const { return iterator; }
 	void setIterator(list<Particle*>::iterator i) { iterator = i; }
 
-	PxVec3 getPosition() const { return pose; }
-	void setPosition(PxVec3 p) { pose = p; }
+	PxVec3 getPosition() const { return pose.p; }
+	void setPosition(PxVec3 p) { pose.p = p; }
 	void setVelocity(PxVec3 v) { vel = v; }
 	PxVec3 getVelocity() const { return vel; }
 	void setAcceleration(PxVec3 a) { accel = a; }
@@ -42,9 +42,7 @@ protected:
 
 	PxVec3 vel;
 	PxVec3 accel;
-	PxVec3 pose;
-
-	PxTransform poseT;
+	PxTransform pose;
 
 	PxTransform* transform = nullptr;
 

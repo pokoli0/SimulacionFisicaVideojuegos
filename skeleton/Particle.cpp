@@ -6,12 +6,18 @@
 Particle::Particle(PxVec3 pos, PxVec3 velo, PxVec3 accele) : pose(pos), vel(velo), accel(accele)
 {
 	damping = 0.99;
+	pose = physx::PxTransform(pos);
+	
+	accel = Vector3(0, 0, 0);
+	lifeTime = 0.0;
 
-	PxSphereGeometry sphere(1);
-	PxShape* shape = CreateShape(sphere);
-	transform = new PxTransform(pose);
+	vel = velo;
+	accel = accele;
 
-	renderItem = new RenderItem(shape, transform, Vector4(1, 0.5, 1, 1));
+	alive = true;
+
+	PxShape* shape = CreateShape(PxSphereGeometry(1));
+	renderItem = new RenderItem(shape, &pose, PxVec4(0,0,0,1));
 
 	RegisterRenderItem(renderItem);
 }
@@ -19,8 +25,8 @@ Particle::Particle(PxVec3 pos, PxVec3 velo, PxVec3 accele) : pose(pos), vel(velo
 Particle::~Particle()
 {
 	DeregisterRenderItem(renderItem);
-	delete renderItem;
-	delete transform;
+	//delete renderItem;
+	//renderItem = nullptr;
 }
 
 void Particle::Integrate(double t, IntegrationType type)
@@ -28,27 +34,26 @@ void Particle::Integrate(double t, IntegrationType type)
 	if (type == EULER) {
 		vel = vel + accel * t;
 		vel = vel * pow(damping, t);
-		pose = pose + vel * t;
+		pose.p = pose.p + vel * t;
 	}
 	else { // semieuler
-		pose = pose + vel * t;
+		pose.p = pose.p + vel * t;
 		vel = vel + accel * t;
 		vel = vel * pow(damping, t);
 	}
 }
 
-bool Particle::isAlive(double t, ParticleSystem& system)
+void Particle::isAlive(double t, ParticleSystem& system, IntegrationType type)
 {
-	alive = true;
 	timeAlive += t;
-	if (timeAlive > lifeTime || !isOnRatio()) {
+	Integrate(t, type);
+	if (timeAlive > lifeTime || !isOnRatio()) { // ver donde se modifica lifetime
 		system.destroyParticle(this);
 		alive = false;
 	}
-	return alive;
 }
 
 bool Particle::isOnRatio()
 {
-	return (pose - center).magnitude() < ratio;
+	return (pose.p - center).magnitude() < ratio;
 }
