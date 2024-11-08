@@ -19,7 +19,7 @@ Particle* UniformGenerator::emit()
     ud distY(minVel.y, maxVel.y);
     ud distZ(minVel.z, maxVel.z);
 
-    PxVec3 randomVelocity(distX(randomizer), distY(randomizer), distZ(randomizer));
+    PxVec3 randomVelocity(distX(randomizer), distY(randomizer), distZ(randomizer)) ;
 
     Particle* p = new Particle(particle);
 

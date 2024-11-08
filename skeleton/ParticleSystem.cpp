@@ -1,10 +1,14 @@
 #include "ParticleSystem.h"
 
+ParticleSystem::ParticleSystem()
+{
+	dir = PxVec3(0, 5, 0); // default
+	
+}
+
 ParticleSystem::ParticleSystem(PxVec3 em)
 {
 	emisor = em;
-
-	dir = PxVec3(2, 0, 0);
 }
 
 ParticleSystem::~ParticleSystem()
@@ -65,6 +69,7 @@ void ParticleSystem::addGenerator(GeneratorType type, PxVec3 pos, PxVec3 directi
 	float range, float spawnR, GenDistribution sp, float rat, float lifetime)
 {
 	Particle p = Particle(pos, direction, PxVec3(0, -9.8, 0));
+
 	p.setRatio(rat);
 	p.setLifeTime(lifetime);
 

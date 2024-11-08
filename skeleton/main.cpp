@@ -102,20 +102,20 @@ void initPhysics(bool interactive)
 	pSystem = new ParticleSystem();
 
 	pSystem->addGenerator(UNIFORME, 
-		Vector3(0, 0, 0), //pos
-		Vector3(0, 20, 0), //direction
-		20, //rate
+		PxVec3(0, 0, 0), //pos
+		PxVec3(0, 30, 0), //direccion hacia donde va la fuente
+		25, //rate
 		PxVec3(0,0,0),// desv - aqui no hace falta asiq lo dejo en 0
 		10, //range
-		5, //spawn range
+		3, //spawn range
 		GenDistribution::UNIFORMDIST,
-		50, //ratio
-		10); //lifetsme
+		60, //ratio
+		5); //lifetsme
 
 	//pSystem->addGenerator(NORMAL,
 	//	Vector3(0, 0, 0), //pos
-	//	Vector3(0, 20, 0), //dir
-	//	1000, //rate
+	//	Vector3(0, 30, 0), //dir
+	//	25, //rate
 	//	Vector3(10, 0.0001, 10), // desv
 	//	20, //range
 	//	20, //spawn range

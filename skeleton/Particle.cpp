@@ -54,7 +54,7 @@ Particle::~Particle()
 
 void Particle::Integrate(double t, IntegrationType type)
 {
-	if (type == EULER) {
+	if (type == EULER) { // esto es semi implicito - para muelles
 		vel = vel + accel * t;
 		vel = vel * pow(damping, t);
 		transform.p = transform.p + vel * t;

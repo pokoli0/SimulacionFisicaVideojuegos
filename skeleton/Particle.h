@@ -46,6 +46,8 @@ public:
 
 	void setRatio(float r) { ratio = r; }
 
+	double getMass() { return mass; }
+
 protected:
 	list<Particle*>::iterator iterator;
 

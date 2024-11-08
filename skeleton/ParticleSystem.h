@@ -25,7 +25,7 @@ enum GeneratorType {
 class ParticleSystem
 {
 public:
-	ParticleSystem() {};
+	ParticleSystem();
 	ParticleSystem(PxVec3 em);
 	~ParticleSystem();
 
