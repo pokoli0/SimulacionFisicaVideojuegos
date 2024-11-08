@@ -5,7 +5,7 @@
 class GravityForce : public ForceGenerator
 {
 public:
-	GravityForce(Vector3 g, float dur);
+	GravityForce(Vector3 g, float dur = -1.0f);
 	~GravityForce();
 
 	// f = m*a

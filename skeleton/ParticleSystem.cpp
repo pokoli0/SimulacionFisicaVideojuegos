@@ -29,6 +29,7 @@ ParticleSystem::~ParticleSystem()
 void ParticleSystem::update(double t)
 {
 	toErase.clear();
+	fToErase.clear();
 
 	for (auto g : gList) {
 		if (g != nullptr) {
@@ -48,6 +49,20 @@ void ParticleSystem::update(double t)
 		if (it != pList.end()) {
 			pList.erase(it);
 			delete p;
+		}
+	}
+
+	// Fuerzas
+	for (auto f : fList) {
+		if (f) {
+			f->update(t);
+		}
+	}
+	for (auto f : fToErase) {
+		auto it = std::find(fList.begin(), fList.end(), f);
+		if (it != fList.end()) {
+			fList.erase(it);
+			delete f;
 		}
 	}
 }
@@ -79,4 +94,10 @@ void ParticleSystem::addGenerator(GeneratorType type, PxVec3 pos, PxVec3 directi
 	else { //normal
 		gList.push_back(new NormalGenerator(&p, rate, desv, spawnR, sp));
 	}
+}
+
+void ParticleSystem::addGravity(PxVec3 g)
+{
+	fList.push_back(new GravityForce(g));
+	cout << "gravity " << endl;
 }

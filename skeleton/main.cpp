@@ -122,6 +122,8 @@ void initPhysics(bool interactive)
 	//	GenDistribution::UNIFORMDIST, 
 	//	50, //ratio
 	//	10); //lifetime
+
+	pSystem->addGravity(PxVec3(0, -9.8f, 0));
 }
 
 

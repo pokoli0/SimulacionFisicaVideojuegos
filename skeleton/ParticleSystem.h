@@ -6,9 +6,13 @@
 #include <iostream>
 
 #include "Particle.h"
+
 #include "ParticleGenerator.h"
 #include "UniformGenerator.h"
 #include "NormalGenerator.h"
+
+#include "ForceGenerator.h"
+#include "GravityForce.h"
 
 
 using namespace physx;
@@ -36,14 +40,20 @@ public:
 	void addGenerator(GeneratorType type, PxVec3 pos, PxVec3 direction, float rate, PxVec3 desv, 
 		float range, float spawnR, GenDistribution sp, float rat, float lifetime = 10.0f);
 
+	void addGravity(PxVec3 g);
+
 	// getters & setters
 	double getParticleLifeTime(Particle* p) { return p->getLifeTime(); }
 
 
 private:
 	list<Particle*> pList;
-	vector<ParticleGenerator*> gList; // cambiar a list si se quiere borrar generadores de forma dinamica
+	vector<ParticleGenerator*> gList;
 	vector<Particle*> toErase;
+
+	// Fuerzas
+	list<ForceGenerator*> fList;
+	vector<ForceGenerator*> fToErase;
 
 	// posicion desde la cual se emiten las particulas
 	PxVec3 emisor; 

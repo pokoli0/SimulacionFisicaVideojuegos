@@ -1,9 +1,9 @@
 #include "GravityForce.h"
 
-GravityForce::GravityForce(PxVec3 g, float dur) 
+GravityForce::GravityForce(PxVec3 g, float dur)
 	: gAcceleration(g), ForceGenerator(dur)
 {
-	duration = -1.0f;
+	duration = dur;
 	gAcceleration = PxVec3(0, -9.8f, 0); // def
 
 	if (g != gAcceleration) {
@@ -13,6 +13,7 @@ GravityForce::GravityForce(PxVec3 g, float dur)
 
 GravityForce::~GravityForce()
 {
+
 }
 
 PxVec3 GravityForce::calculateForce(Particle* p)

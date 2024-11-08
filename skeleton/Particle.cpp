@@ -48,8 +48,6 @@ Particle::Particle(Particle const& p)
 Particle::~Particle()
 {
 	DeregisterRenderItem(renderItem);
-	//delete renderItem;
-	//renderItem = nullptr;
 }
 
 void Particle::Integrate(double t, IntegrationType type)
