@@ -12,9 +12,11 @@ Particle::Particle(PxVec3 pos, PxVec3 velo, PxVec3 accele)
 	PxSphereGeometry geo(1);
 	PxShape* shape = CreateShape(geo);
 
+
+
 	renderItem = new RenderItem(shape, &transform, Vector4(1, 0.5, 1, 1));
 	RegisterRenderItem(renderItem);
-	damping = 0.99;
+
 }
 
 Particle::Particle(PxVec3 pos, PxVec3 velo, PxVec3 accele, double lifetime)
@@ -39,10 +41,11 @@ Particle::Particle(Particle const& p)
 	PxShape* shape = CreateShape(PxSphereGeometry(1));
 	renderItem = new RenderItem(shape, &transform, Vector4(1, 0.5, 1, 1));
 
+	mass = 1;
 	center = p.center;
 	ratio = p.ratio;
 	lifeTime = p.lifeTime;
-	damping = 0.99;
+	damping = 0.995;
 }
 
 Particle::~Particle()
@@ -52,16 +55,18 @@ Particle::~Particle()
 
 void Particle::Integrate(double t, IntegrationType type)
 {
-	if (type == EULER) { // esto es semi implicito - para muelles
-		vel = vel + accel * t;
-		vel = vel * pow(damping, t);
-		transform.p = transform.p + vel * t;
+	if (type == EULER) {
+		vel = vel + accel * t;  // Actualiza la velocidad con la aceleración
+		vel = vel * pow(damping, t);  // Aplica el damping a la velocidad
+		transform.p = transform.p + vel * t;  // Actualiza la posición con la nueva velocidad
 	}
-	else { // semieuler
-		vel = vel * pow(damping, t) + accel * t;
-		transform.p = transform.p + vel * t;
+	else {  // SEMIEULER
+		vel = vel * pow(damping, t) + accel * t;  // Aplica damping primero y luego la aceleración
+		transform.p = transform.p + vel * t;  // Actualiza la posición con la nueva velocidad
 	}
 }
+
+
 
 void Particle::isAlive(double t, ParticleSystem& system, IntegrationType type)
 {

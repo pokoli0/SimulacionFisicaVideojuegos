@@ -13,6 +13,7 @@ class UniformGenerator : public ParticleGenerator
 public:
     UniformGenerator(Particle* p, float rate, float range, float spawnRange, GenDistribution dist);
 
+    //cuando se genera una nueva partícula, su velocidad inicial se calcula como un valor aleatorio entre minVel y maxVel
     Particle* emit() override;
 
 private:

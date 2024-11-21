@@ -23,4 +23,10 @@ PxVec3 GravityForce::calculateForce(Particle* p)
 
 void GravityForce::update(double t)
 {
+	if (duration > 0.0f) {
+		duration -= t;
+		if (duration <= 0.0f) {
+			alive = false; // Desactiva la fuerza cuando se agote la duración
+		}
+	}
 }

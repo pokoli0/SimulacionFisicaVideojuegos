@@ -28,44 +28,56 @@ ParticleSystem::~ParticleSystem()
 
 void ParticleSystem::update(double t)
 {
-	toErase.clear();
-	fToErase.clear();
+    toErase.clear();
+    fToErase.clear();
 
-	for (auto g : gList) {
-		if (g != nullptr) {
-			g->update(t, *this);
-		}
-	}
+    // Actualizar todos los generadores
+    for (auto g : gList) {
+        if (g != nullptr) {
+            g->update(t, *this);
+        }
+    }
 
-	for (auto it = pList.begin(); it != pList.end(); ) {
-		if (*it != nullptr) {
-			(*it)->isAlive(t, *this, Particle::SEMIEULER);
-			it++;
-		}
-	}
+    // Actualizar todas las partículas
+    for (auto it = pList.begin(); it != pList.end(); ) {
+        if (*it != nullptr) {
+            // Reiniciar aceleración a cero
+            (*it)->setAcceleration(PxVec3(0, 0, 0));
 
-	for (auto p : toErase) {
-		auto it = std::find(pList.begin(), pList.end(), p);
-		if (it != pList.end()) {
-			pList.erase(it);
-			delete p;
-		}
-	}
+            // Aplicar fuerzas (como gravedad) a la aceleración
+            for (auto f : fList) {
+                if (f && f->isAlive()) {
+                    PxVec3 force = f->calculateForce(*it);
+                    PxVec3 accel = force / (*it)->getMass();  // F = ma
+                    (*it)->setAcceleration((*it)->getAcceleration() + accel);
+                }
+            }
 
-	// Fuerzas
-	for (auto f : fList) {
-		if (f) {
-			f->update(t);
-		}
-	}
-	for (auto f : fToErase) {
-		auto it = std::find(fList.begin(), fList.end(), f);
-		if (it != fList.end()) {
-			fList.erase(it);
-			delete f;
-		}
-	}
+            // Integrar la partícula con la nueva aceleración
+            (*it)->isAlive(t, *this, Particle::SEMIEULER);
+            it++;
+        }
+    }
+
+    // Eliminar partículas y generadores inactivos
+    for (auto p : toErase) {
+        auto it = std::find(pList.begin(), pList.end(), p);
+        if (it != pList.end()) {
+            pList.erase(it);
+            delete p;
+        }
+    }
+
+    for (auto f : fToErase) {
+        auto it = std::find(fList.begin(), fList.end(), f);
+        if (it != fList.end()) {
+            fList.erase(it);
+            delete f;
+        }
+    }
 }
+
+
 
 void ParticleSystem::addParticle(Particle* p)
 {
@@ -81,23 +93,29 @@ void ParticleSystem::destroyParticle(Particle* p)
 }
 
 void ParticleSystem::addGenerator(GeneratorType type, PxVec3 pos, PxVec3 direction, float rate, PxVec3 desv, 
-	float range, float spawnR, GenDistribution sp, float rat, float lifetime)
+    float range, float spawnR, GenDistribution sp, float rat, float lifetime)
 {
-	Particle p = Particle(pos, direction, PxVec3(0, -9.8, 0));
+    // Partícula con posición inicial, dirección y velocidad inicial hacia arriba
+    Particle p = Particle(pos, direction, PxVec3(0, 30, 0));  // Da una velocidad inicial hacia arriba
 
-	p.setRatio(rat);
-	p.setLifeTime(lifetime);
+    p.setRatio(rat);
+    p.setLifeTime(lifetime);
 
-	if (type == UNIFORME) {
-		gList.push_back(new UniformGenerator(&p, rate, range, spawnR, sp));
-	}
-	else { //normal
-		gList.push_back(new NormalGenerator(&p, rate, desv, spawnR, sp));
-	}
+    if (type == UNIFORME) {
+        gList.push_back(new UniformGenerator(&p, rate, range, spawnR, sp));
+    }
+    else { // Generador normal
+        gList.push_back(new NormalGenerator(&p, rate, desv, spawnR, sp));
+    }
 }
+
 
 void ParticleSystem::addGravity(PxVec3 g)
 {
 	fList.push_back(new GravityForce(g));
-	cout << "gravity " << endl;
+}
+
+void ParticleSystem::addWind(PxVec3 windVelocity, float k1, float k2, float duration) 
+{
+	fList.push_back(new WindForce(windVelocity, k1, k2, duration));
 }

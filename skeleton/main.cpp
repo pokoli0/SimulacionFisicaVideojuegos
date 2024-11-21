@@ -14,7 +14,7 @@
 
 #include <iostream>
 
-std::string display_text = "pokoli0";
+std::string display_text = "Paula Sierra Luque";
 
 
 using namespace physx;
@@ -124,6 +124,8 @@ void initPhysics(bool interactive)
 	//	10); //lifetime
 
 	pSystem->addGravity(PxVec3(0, -9.8f, 0));
+	pSystem->addWind(PxVec3(30, 0, 0), 0.5f); // viento hacia la derecha
+
 }
 
 

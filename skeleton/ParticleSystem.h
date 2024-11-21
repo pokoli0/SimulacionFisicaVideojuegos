@@ -13,6 +13,7 @@
 
 #include "ForceGenerator.h"
 #include "GravityForce.h"
+#include "WindForce.h"
 
 
 using namespace physx;
@@ -41,6 +42,8 @@ public:
 		float range, float spawnR, GenDistribution sp, float rat, float lifetime = 10.0f);
 
 	void addGravity(PxVec3 g);
+	void addWind(PxVec3 windVelocity, float k1, float k2 = 0.0f, float duration = -1.0f);
+
 
 	// getters & setters
 	double getParticleLifeTime(Particle* p) { return p->getLifeTime(); }

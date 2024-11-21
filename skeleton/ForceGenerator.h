@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "Particle.h"
+#include <iostream>
 
 class ForceGenerator
 {
@@ -14,7 +15,6 @@ public:
 	virtual void update(double t) = 0;
 
 	// Getters
-
 	bool isAlive() { return alive; }
 
 protected:

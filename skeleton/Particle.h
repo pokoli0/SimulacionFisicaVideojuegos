@@ -18,7 +18,7 @@ public:
 	Particle(PxVec3 pos, PxVec3 velo, PxVec3 accele);
 
 	Particle(PxVec3 pos, PxVec3 velo, PxVec3 accele, double lifetime);
-	Particle(Particle const& p);
+	Particle(Particle const& p); // Para el sistema de particulas
 	~Particle();
 
 
@@ -43,10 +43,12 @@ public:
 	PxVec3 getVelocity() const { return vel; }
 
 	void setAcceleration(PxVec3 a) { accel = a; }
+	PxVec3 getAcceleration() const { return accel; }
 
 	void setRatio(float r) { ratio = r; }
 
 	double getMass() { return mass; }
+	void setMass(double m) { mass = m; }
 
 protected:
 	list<Particle*>::iterator iterator;
