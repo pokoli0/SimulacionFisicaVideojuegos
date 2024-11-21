@@ -26,7 +26,7 @@ Particle* UniformGenerator::emit()
 
     Particle* p = new Particle(particle);  // Crea la nueva partícula
 
-    cout << "Generated velocity: " << randomVelocity.x << ", " << randomVelocity.y << ", " << randomVelocity.z << endl;
+    //cout << "Generated velocity: " << randomVelocity.x << ", " << randomVelocity.y << ", " << randomVelocity.z << endl;
 
     p->setVelocity(randomVelocity);  // Asigna la velocidad calculada
     p->setPosition(calculatePosition());  // Calcula y asigna la posición

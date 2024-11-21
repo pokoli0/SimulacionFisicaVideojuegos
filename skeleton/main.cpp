@@ -123,8 +123,9 @@ void initPhysics(bool interactive)
 	//	50, //ratio
 	//	10); //lifetime
 
-	pSystem->addGravity(PxVec3(0, -9.8f, 0));
-	pSystem->addWind(PxVec3(30, 0, 0), 0.5f); // viento hacia la derecha
+	//pSystem->addGravity(PxVec3(0, -9.8f, 0));
+	//pSystem->addWind(PxVec3(30, 0, 0), 0.5f); // viento hacia la derecha
+	pSystem->addTornado(PxVec3(0, 0, 0), 100.0f, 50.0f, -1.0f);  // Torbellino con intensidad 100, radio 50, y duración infinita
 
 }
 

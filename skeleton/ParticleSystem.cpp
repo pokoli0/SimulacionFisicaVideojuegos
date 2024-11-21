@@ -119,3 +119,8 @@ void ParticleSystem::addWind(PxVec3 windVelocity, float k1, float k2, float dura
 {
 	fList.push_back(new WindForce(windVelocity, k1, k2, duration));
 }
+
+void ParticleSystem::addTornado(PxVec3 center, float intensity, float radius, float duration) 
+{
+    fList.push_back(new Tornado(center, intensity, radius, duration));
+}
