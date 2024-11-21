@@ -8,7 +8,7 @@
 class ForceGenerator
 {
 public:
-	ForceGenerator(float dur);
+	ForceGenerator(float dur = -1.0f);
 	~ForceGenerator();
 
 	virtual PxVec3 calculateForce(Particle* p) = 0;

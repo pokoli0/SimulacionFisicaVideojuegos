@@ -13,7 +13,7 @@ PxVec3 WindForce::calculateForce(Particle* p)
     PxVec3 relativeVelocity = windVelocity - p->getVelocity();
     PxVec3 force = coeffK1 * relativeVelocity;
 
-    // Si hay un término cuadrático, agrégalo
+    // Si hay un término cuadrático
     if (coeffK2 != 0.0f) {
         force += coeffK2 * relativeVelocity.magnitude() * relativeVelocity;
     }
@@ -26,7 +26,7 @@ void WindForce::update(double t)
     if (duration > 0.0f) {
         duration -= t;
         if (duration <= 0.0f) {
-            alive = false; // Marca el generador como "muerto" si el tiempo se agota
+            alive = false;
         }
     }
 }

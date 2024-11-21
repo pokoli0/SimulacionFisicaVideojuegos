@@ -101,16 +101,18 @@ void initPhysics(bool interactive)
 	// Particle System
 	pSystem = new ParticleSystem();
 
-	pSystem->addGenerator(UNIFORME, 
-		PxVec3(0, 0, 0), //pos
-		PxVec3(0, 30, 0), //direccion hacia donde va la fuente
-		25, //rate
-		PxVec3(0,0,0),// desv - aqui no hace falta asiq lo dejo en 0
-		10, //range
-		3, //spawn range
+
+	pSystem->addGenerator(UNIFORME,
+		PxVec3(0, 0, 0),  // Centro del generador
+		PxVec3(0, 0, 0),  // Velocidad inicial nula
+		10,               // Tasa de generación (partículas por segundo)
+		PxVec3(0, 0, 0),  // Sin desviación inicial
+		10,               // Rango de emisión
+		3,                // Spawn range
 		GenDistribution::UNIFORMDIST,
-		60, //ratio
-		5); //lifetsme
+		200,               // Ratio
+		5                 // Vida útil
+	);
 
 	//pSystem->addGenerator(NORMAL,
 	//	Vector3(0, 0, 0), //pos
@@ -123,12 +125,11 @@ void initPhysics(bool interactive)
 	//	50, //ratio
 	//	10); //lifetime
 
-	//pSystem->addGravity(PxVec3(0, -9.8f, 0));
-	//pSystem->addWind(PxVec3(30, 0, 0), 0.5f); // viento hacia la derecha
-	pSystem->addTornado(PxVec3(0, 0, 0), 100.0f, 50.0f, -1.0f);  // Torbellino con intensidad 100, radio 50, y duración infinita
+	pSystem->addGravity(PxVec3(0, -9.8f, 0));
+	pSystem->addWind(PxVec3(30, 0, 0), 0.5f); // viento hacia la derecha
+	//pSystem->addTornado(PxVec3(0, 0, 0), 20, 50, -1.0f); // tornado con centro , intensidad, radio y duracion infinita (-1)
 
 }
-
 
 // Function to configure what happens in each step of physics
 // interactive: true if the game is rendering, false if it offline
@@ -194,11 +195,20 @@ void keyPress(unsigned char key, const PxTransform& camera) //input
 	case 'B': 
 		InstanciaParticula();
 		break;
-	//case ' ':	break;
-	case ' ':
-	{
+
+	case 'E': 
+		pSystem->addExplosion(
+			PxVec3(0,0,0),	 // Centro de la explosión
+			5000,            // Intensidad
+			100,           // Radio
+			1.0f             // Tau
+		);
 		break;
-	}
+
+	case ' ':
+	
+		break;
+	
 	default:
 		break;
 	}

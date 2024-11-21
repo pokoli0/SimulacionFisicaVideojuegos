@@ -95,8 +95,7 @@ void ParticleSystem::destroyParticle(Particle* p)
 void ParticleSystem::addGenerator(GeneratorType type, PxVec3 pos, PxVec3 direction, float rate, PxVec3 desv, 
     float range, float spawnR, GenDistribution sp, float rat, float lifetime)
 {
-    // Partícula con posición inicial, dirección y velocidad inicial hacia arriba
-    Particle p = Particle(pos, direction, PxVec3(0, 30, 0));  // Da una velocidad inicial hacia arriba
+    Particle p = Particle(pos, direction, PxVec3(0, 0, 0));
 
     p.setRatio(rat);
     p.setLifeTime(lifetime);
@@ -124,3 +123,10 @@ void ParticleSystem::addTornado(PxVec3 center, float intensity, float radius, fl
 {
     fList.push_back(new Tornado(center, intensity, radius, duration));
 }
+
+void ParticleSystem::addExplosion(PxVec3 center, float intensity, float radius, float tau) 
+{
+    fList.push_back(new Explosion(center, intensity, radius, tau, pList));
+}
+
+

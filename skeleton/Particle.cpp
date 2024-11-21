@@ -12,8 +12,6 @@ Particle::Particle(PxVec3 pos, PxVec3 velo, PxVec3 accele)
 	PxSphereGeometry geo(1);
 	PxShape* shape = CreateShape(geo);
 
-
-
 	renderItem = new RenderItem(shape, &transform, Vector4(1, 0.5, 1, 1));
 	RegisterRenderItem(renderItem);
 
@@ -56,17 +54,15 @@ Particle::~Particle()
 void Particle::Integrate(double t, IntegrationType type)
 {
 	if (type == EULER) {
-		vel = vel + accel * t;  // Actualiza la velocidad con la aceleración
-		vel = vel * pow(damping, t);  // Aplica el damping a la velocidad
-		transform.p = transform.p + vel * t;  // Actualiza la posición con la nueva velocidad
+		vel = vel + accel * t;  
+		vel = vel * pow(damping, t);
+		transform.p = transform.p + vel * t;
 	}
 	else {  // SEMIEULER
 		vel = vel * pow(damping, t) + accel * t;  // Aplica damping primero y luego la aceleración
 		transform.p = transform.p + vel * t;  // Actualiza la posición con la nueva velocidad
 	}
 }
-
-
 
 void Particle::isAlive(double t, ParticleSystem& system, IntegrationType type)
 {

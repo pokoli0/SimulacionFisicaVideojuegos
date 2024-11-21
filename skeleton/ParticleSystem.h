@@ -15,6 +15,7 @@
 #include "GravityForce.h"
 #include "WindForce.h"
 #include "Tornado.h"
+#include "Explosion.h"
 
 
 using namespace physx;
@@ -45,6 +46,7 @@ public:
 	void addGravity(PxVec3 g);
 	void addWind(PxVec3 windVelocity, float k1, float k2 = 0.0f, float duration = -1.0f);
 	void addTornado(PxVec3 center, float intensity, float radius, float duration);
+	void addExplosion(PxVec3 center, float intensity, float radius, float tau);
 
 	// getters & setters
 	double getParticleLifeTime(Particle* p) { return p->getLifeTime(); }

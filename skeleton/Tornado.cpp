@@ -8,22 +8,16 @@ Tornado::Tornado(PxVec3 center, float intensity, float radius, float duration)
 
 PxVec3 Tornado::calculateForce(Particle* p)
 {
-    PxVec3 particlePos = p->getPosition();
+    // Posición de la partícula
+    PxVec3 pos = p->getPosition();
 
-    // distancia de la partícula al centro del torbellino
-    PxVec3 direction = particlePos - center;
 
-    float distance = direction.magnitude();
-
-    // velocidad tangencial (perpendicular al radio)
-    direction.normalize();
-
-    // velocidad tangencial en torno al centro del torbellino
-    PxVec3 tornadoVelocity = PxVec3(
-        -(direction.y * K) / (distance + 1e-3f),
-        direction.x * K / (distance + 1e-3f),
-        0
+    // Fórmula del torbellino
+    PxVec3 force = K * PxVec3(
+        - (pos.z - center.z),       // - (z - z_c)
+        15 - (pos.y - center.y),     // 50 - (y - y_c)
+        pos.x - center.x           // (x - x_c)
     );
 
-    return tornadoVelocity;
+    return force;
 }
