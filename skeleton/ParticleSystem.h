@@ -18,6 +18,7 @@
 #include "Explosion.h"
 
 
+
 using namespace physx;
 using namespace std;
 
@@ -47,6 +48,9 @@ public:
 	void addWind(PxVec3 windVelocity, float k1, float k2 = 0.0f, float duration = -1.0f);
 	void addTornado(PxVec3 center, float intensity, float radius, float duration);
 	void addExplosion(PxVec3 center, float intensity, float radius, float tau);
+
+	// muelles
+	void generateSpringDemo();
 
 	// getters & setters
 	double getParticleLifeTime(Particle* p) { return p->getLifeTime(); }

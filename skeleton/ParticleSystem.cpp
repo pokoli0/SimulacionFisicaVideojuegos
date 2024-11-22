@@ -44,7 +44,7 @@ void ParticleSystem::update(double t)
             // Reiniciar aceleración a cero
             (*it)->setAcceleration(PxVec3(0, 0, 0));
 
-            // Aplicar fuerzas (como gravedad) a la aceleración
+            // Aplicar fuerzas (como gravedad) a la aceleracion
             for (auto f : fList) {
                 if (f && f->isAlive()) {
                     PxVec3 force = f->calculateForce(*it);
@@ -53,7 +53,7 @@ void ParticleSystem::update(double t)
                 }
             }
 
-            // Integrar la partícula con la nueva aceleración
+            // Integrar la particula con la nueva aceleracion
             (*it)->isAlive(t, *this, Particle::SEMIEULER);
             it++;
         }

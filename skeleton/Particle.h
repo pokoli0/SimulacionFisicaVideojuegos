@@ -21,12 +21,12 @@ public:
 	Particle(Particle const& p); // Para el sistema de particulas
 	~Particle();
 
+	void addForce(PxVec3 f);
 
 	void Integrate(double t, IntegrationType type);
 	void isAlive(double t, ParticleSystem& system, IntegrationType type);
 
 	bool isOnRatio();
-
 	bool updateLifeTime(double t);
 
 	// getters & setters
@@ -55,7 +55,6 @@ protected:
 
 	PxVec3 vel;
 	PxVec3 accel;
-	//PxTransform pose;
 
 	PxTransform transform;
 

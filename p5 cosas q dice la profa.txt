@@ -1,0 +1,25 @@
+createrigidstate (crear solidos estaticos)
+- attachshape
+- crear render item
+- px scene -> addActor(puntero al solido q hemos creado)
+
+createrigiddynamic (crear solidos dinamicos) -> para generar estos mejor una clase
+- attachshape
+- crear render item
+- pxScene -> addActor(puntero al solido q hemos creado)
+- dar velocidad lineal vec3, velocidad angular, poner tensor de inercia (setmassandupdateInertia)
+
+cosas para el juego final: probar otros materiales, createMaterial(staticFriction, dynamicFriction, ...)
+
+generador de solidos rigidos gaussiano -> hacer lo mismo q con particulas
+
+addForce tambien.
+
+
+---el de la profe - ver fotos
+en el main tenemos el material creado, las fisicas y la escena
+
+sceneDesc.gravity
+GaussianRGBGenerator()
+
+para que caigan y reboten darle tb velocidad angular

@@ -15,7 +15,7 @@ public:
 	virtual void update(double t) = 0;
 
 	// Getters
-	bool isAlive() { return alive; }
+	bool isAlive() const { return alive; }
 
 protected:
 	float duration;

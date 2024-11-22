@@ -51,6 +51,12 @@ Particle::~Particle()
 	DeregisterRenderItem(renderItem);
 }
 
+void Particle::addForce(PxVec3 f)
+{
+	PxVec3 a = f / mass;  // F = ma
+	accel += a;
+}
+
 void Particle::Integrate(double t, IntegrationType type)
 {
 	if (type == EULER) {

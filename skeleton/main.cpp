@@ -126,7 +126,7 @@ void initPhysics(bool interactive)
 	//	10); //lifetime
 
 	pSystem->addGravity(PxVec3(0, -9.8f, 0));
-	pSystem->addWind(PxVec3(30, 0, 0), 0.5f); // viento hacia la derecha
+	//pSystem->addWind(PxVec3(30, 0, 0), 0.5f); // viento hacia la derecha
 	//pSystem->addTornado(PxVec3(0, 0, 0), 20, 50, -1.0f); // tornado con centro , intensidad, radio y duracion infinita (-1)
 
 }
@@ -200,7 +200,7 @@ void keyPress(unsigned char key, const PxTransform& camera) //input
 		pSystem->addExplosion(
 			PxVec3(0,0,0),	 // Centro de la explosión
 			5000,            // Intensidad
-			100,           // Radio
+			100,			 // Radio
 			1.0f             // Tau
 		);
 		break;
