@@ -10,7 +10,7 @@ ParticleGenerator::ParticleGenerator(Particle* p, float particleSecond, float sp
 
 PxVec3 ParticleGenerator::calculatePosition()
 {
-    PxVec3 modPos = particle.getPosition();
+    const PxVec3 modPos = particle.getPosition();
     PxVec3 endPos;
 
     if (distribution == UNIFORMDIST) {
@@ -22,7 +22,7 @@ PxVec3 ParticleGenerator::calculatePosition()
     }
     else { // normal
 
-        Vector3 dev = { emissionRange, emissionRange, emissionRange };
+        const Vector3 dev = { emissionRange, emissionRange, emissionRange };
         std::normal_distribution<float> distX(modPos.x, emissionRange);
         std::normal_distribution<float> distY(modPos.y, emissionRange);
         std::normal_distribution<float> distZ(modPos.z, emissionRange);
@@ -33,7 +33,7 @@ PxVec3 ParticleGenerator::calculatePosition()
 
 void ParticleGenerator::update(double t, ParticleSystem& system)
 {
-    int particles = static_cast<int>(accumulatedTime * particlePerSecond);
+    const int particles = static_cast<int>(accumulatedTime * particlePerSecond);
 
     for (int i = 0; i < particles; i++) {
         Particle* newParticle = emit();

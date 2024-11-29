@@ -16,6 +16,8 @@
 #include "WindForce.h"
 #include "Tornado.h"
 #include "Explosion.h"
+#include "SpringForceGenerator.h"
+#include "AnchoredSpringFG.h"
 
 
 
@@ -34,7 +36,7 @@ class ParticleSystem
 {
 public:
 	ParticleSystem();
-	ParticleSystem(PxVec3 em);
+
 	~ParticleSystem();
 
 	void update(double t);
@@ -49,6 +51,8 @@ public:
 	void addTornado(PxVec3 center, float intensity, float radius, float duration);
 	void addExplosion(PxVec3 center, float intensity, float radius, float tau);
 
+	void addSpring(Particle* other);
+
 	// muelles
 	void generateSpringDemo();
 
@@ -57,20 +61,16 @@ public:
 
 
 private:
+
 	list<Particle*> pList;
-	vector<ParticleGenerator*> gList;
 	vector<Particle*> toErase;
+
+	vector<ParticleGenerator*> gList;
+	vector<ParticleGenerator*> gToErase;
 
 	// Fuerzas
 	list<ForceGenerator*> fList;
 	vector<ForceGenerator*> fToErase;
 
-	// posicion desde la cual se emiten las particulas
-	PxVec3 emisor; 
-
-	PxVec3 dir;
-
-	vector<Particle*> particles;
-	
 };
 

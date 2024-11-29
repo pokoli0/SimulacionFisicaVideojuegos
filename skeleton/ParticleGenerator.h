@@ -17,6 +17,7 @@ class ParticleGenerator
 {
 public:
 	ParticleGenerator(Particle* p, float particleSecond, float spawnR, GenDistribution sp);
+	virtual ~ParticleGenerator() = default;
 
 	virtual Particle* emit() = 0;
 
@@ -34,6 +35,7 @@ protected:
 	float emissionRange;
 	GenDistribution distribution;
 
+	// particula a instanciar
 	Particle particle;
 
 };

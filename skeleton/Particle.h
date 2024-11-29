@@ -15,13 +15,10 @@ public:
 		SEMIEULER
 	};
 
-	Particle(PxVec3 pos, PxVec3 velo, PxVec3 accele);
-
-	Particle(PxVec3 pos, PxVec3 velo, PxVec3 accele, double lifetime);
+	Particle();
 	Particle(Particle const& p); // Para el sistema de particulas
 	~Particle();
 
-	void addForce(PxVec3 f);
 
 	void Integrate(double t, IntegrationType type);
 	void isAlive(double t, ParticleSystem& system, IntegrationType type);
@@ -50,13 +47,17 @@ public:
 	double getMass() { return mass; }
 	void setMass(double m) { mass = m; }
 
+	void setColor(PxVec4 c) { color = c; }
+
 protected:
 	list<Particle*>::iterator iterator;
 
 	PxVec3 vel;
 	PxVec3 accel;
+	//PxVec3 pos;
 
 	PxTransform transform;
+	PxTransform* pos;
 
 	double damping;
 
@@ -65,7 +66,8 @@ protected:
 	double mass;
 
 	double lifeTime;
-	//double timeAlive;
+
+	PxVec4 color;
 
 	PxVec3 center;
 	float ratio;

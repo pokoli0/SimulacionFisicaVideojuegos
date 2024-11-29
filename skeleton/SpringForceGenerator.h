@@ -14,7 +14,7 @@ public:
 
 	inline void setK(double k) { K = k; }
 
-private:
+protected:
 	double K; 
 	double restingLength;
 	Particle* other;

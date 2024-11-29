@@ -5,14 +5,23 @@ UniformGenerator::UniformGenerator(Particle* p, float rate, float range, float s
 {
     cout << "Uniform generator created." << endl;
 
-    PxVec3 vel = p->getVelocity();  // Velocidad inicial de la partícula
-    PxVec3 desv = PxVec3(range, range, range);  // Desviación máxima para la velocidad
+    const PxVec3 vel = p->getVelocity();  // Velocidad inicial de la partícula
+    const PxVec3 desv = PxVec3(range, range, range);  // Desviación máxima para la velocidad
 
     // Asegura que la velocidad en Y sea siempre positiva (hacia arriba)
     minVel = vel - desv;
     maxVel = vel + desv;
     minVel.y = 10.0f;  // Velocidad mínima en Y (hacia arriba)
     maxVel.y = 30.0f;  // Velocidad máxima en Y (hacia arriba)
+}
+
+UniformGenerator::~UniformGenerator()
+{
+    for (Particle* p : particles)
+    {
+        delete p; // Elimina cada partícula creada
+    }
+    particles.clear();
 }
 
 Particle* UniformGenerator::emit()
@@ -22,14 +31,14 @@ Particle* UniformGenerator::emit()
     ud distZ(minVel.z, maxVel.z);
 
     // Calcula la velocidad aleatoria en las direcciones X, Y, Z
-    PxVec3 randomVelocity(distX(randomizer), distY(randomizer), distZ(randomizer));
+    const PxVec3 randomVelocity(distX(randomizer), distY(randomizer), distZ(randomizer));
 
-    Particle* p = new Particle(particle);  // Crea la nueva partícula
-
-    //cout << "Generated velocity: " << randomVelocity.x << ", " << randomVelocity.y << ", " << randomVelocity.z << endl;
+    Particle* p = new Particle();  // Crea la nueva partícula
 
     p->setVelocity(randomVelocity);  // Asigna la velocidad calculada
     p->setPosition(calculatePosition());  // Calcula y asigna la posición
+
+    particles.push_back(p);
 
     return p;
 }

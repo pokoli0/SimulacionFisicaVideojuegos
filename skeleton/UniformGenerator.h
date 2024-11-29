@@ -12,6 +12,7 @@ class UniformGenerator : public ParticleGenerator
 {
 public:
     UniformGenerator(Particle* p, float rate, float range, float spawnRange, GenDistribution dist);
+    ~UniformGenerator();
 
     //cuando se genera una nueva partícula, su velocidad inicial se calcula como un valor aleatorio entre minVel y maxVel
     Particle* emit() override;
@@ -19,7 +20,7 @@ public:
 private:
     PxVec3 minVel;
     PxVec3 maxVel;
-
+    std::vector<Particle*> particles;
 };
 
 using ud = uniform_real_distribution<float>;

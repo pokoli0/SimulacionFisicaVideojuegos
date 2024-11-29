@@ -95,24 +95,26 @@ void initPhysics(bool interactive)
 	//originTf = new PxTransform(0, 0, 0);
 	//originSphere = new RenderItem(CreateShape(PxSphereGeometry(1)), originTf, Vector4(1, 1, 1, 1));
 
-	// Particle
-	//particle = new Particle(PxVec3(0, 0, 0), PxVec3(0, 0, 0), PxVec3(5, 0, 0));
+	/// ==== PRACTICA 1 ====
+	 
+	// particle = new Particle();
+	
+	
+	/// ==== PRACTICA 2 ====
 
-	// Particle System
 	pSystem = new ParticleSystem();
-
-
-	pSystem->addGenerator(UNIFORME,
-		PxVec3(0, 0, 0),  // Centro del generador
-		PxVec3(0, 0, 0),  // Velocidad inicial nula
-		10,               // Tasa de generación (partículas por segundo)
-		PxVec3(0, 0, 0),  // Sin desviación inicial
-		10,               // Rango de emisión
-		3,                // Spawn range
-		GenDistribution::UNIFORMDIST,
-		200,               // Ratio
-		5                 // Vida útil
-	);
+	
+	//pSystem->addGenerator(UNIFORME,
+	//	PxVec3(0, 0, 0),  // Centro del generador
+	//	PxVec3(0, 0, 0),  // Velocidad inicial nula
+	//	10,               // Tasa de generación (partículas por segundo)
+	//	PxVec3(0, 0, 0),  // Sin desviación inicial
+	//	10,               // Rango de emisión
+	//	3,                // Spawn range
+	//	GenDistribution::UNIFORMDIST,
+	//	200,               // Ratio
+	//	5                 // Vida útil
+	//);
 
 	//pSystem->addGenerator(NORMAL,
 	//	Vector3(0, 0, 0), //pos
@@ -124,11 +126,20 @@ void initPhysics(bool interactive)
 	//	GenDistribution::UNIFORMDIST, 
 	//	50, //ratio
 	//	10); //lifetime
+	
 
-	pSystem->addGravity(PxVec3(0, -9.8f, 0));
+	/// ==== PRACTICA 3 ====
+
+	//pSystem->addGravity(PxVec3(0, -9.8f, 0));
 	//pSystem->addWind(PxVec3(30, 0, 0), 0.5f); // viento hacia la derecha
 	//pSystem->addTornado(PxVec3(0, 0, 0), 20, 50, -1.0f); // tornado con centro , intensidad, radio y duracion infinita (-1)
 
+
+	/// ==== PRACTICA 4 ====
+
+	pSystem->generateSpringDemo();
+
+	
 }
 
 // Function to configure what happens in each step of physics
@@ -180,7 +191,10 @@ void cleanupPhysics(bool interactive)
 }
 
 void InstanciaParticula() {
-	Particle* particle = new Particle(PxVec3(GetCamera()->getTransform().p), PxVec3(GetCamera()->getDir() * 10), PxVec3(0, -5, 0));
+	Particle* particle = new Particle();
+	particle->setPosition(PxVec3(GetCamera()->getTransform().p));
+	particle->setVelocity(PxVec3(GetCamera()->getDir() * 10));
+	pSystem->addParticle(particle);
 	proyectiles.push_back(particle);
 	cout << "Particulas: " << proyectiles.size() << endl;
 }

@@ -2,14 +2,9 @@
 
 ParticleSystem::ParticleSystem()
 {
-	dir = PxVec3(0, 5, 0); // default
 	
 }
 
-ParticleSystem::ParticleSystem(PxVec3 em)
-{
-	emisor = em;
-}
 
 ParticleSystem::~ParticleSystem()
 {
@@ -21,15 +16,21 @@ ParticleSystem::~ParticleSystem()
 		delete g;
 		g = nullptr;
 	}
+    for (auto f : fList) {
+        delete f;
+        f = nullptr;
+    }
 
 	pList.clear();
 	gList.clear();
+    fList.clear();
 }
 
 void ParticleSystem::update(double t)
 {
     toErase.clear();
     fToErase.clear();
+    gToErase.clear();
 
     // Actualizar todos los generadores
     for (auto g : gList) {
@@ -47,8 +48,8 @@ void ParticleSystem::update(double t)
             // Aplicar fuerzas (como gravedad) a la aceleracion
             for (auto f : fList) {
                 if (f && f->isAlive()) {
-                    PxVec3 force = f->calculateForce(*it);
-                    PxVec3 accel = force / (*it)->getMass();  // F = ma
+                    const PxVec3 force = f->calculateForce(*it);
+                    const PxVec3 accel = force / (*it)->getMass();  // F = ma
                     (*it)->setAcceleration((*it)->getAcceleration() + accel);
                 }
             }
@@ -75,6 +76,14 @@ void ParticleSystem::update(double t)
             delete f;
         }
     }
+
+    for (auto g : gToErase) {
+        auto it = std::find(gList.begin(), gList.end(), g);
+        if (it != gList.end()) {
+            gList.erase(it);
+            delete g;
+        }
+    }
 }
 
 
@@ -84,6 +93,7 @@ void ParticleSystem::addParticle(Particle* p)
 	pList.push_back(p);
 	p->setIterator(--pList.end());
 }
+
 
 void ParticleSystem::destroyParticle(Particle* p)
 {
@@ -95,7 +105,10 @@ void ParticleSystem::destroyParticle(Particle* p)
 void ParticleSystem::addGenerator(GeneratorType type, PxVec3 pos, PxVec3 direction, float rate, PxVec3 desv, 
     float range, float spawnR, GenDistribution sp, float rat, float lifetime)
 {
-    Particle p = Particle(pos, direction, PxVec3(0, 0, 0));
+    Particle p = Particle();
+    p.setPosition(pos);
+    p.setVelocity(direction);
+    p.setAcceleration(PxVec3(0, 0, 0));
 
     p.setRatio(rat);
     p.setLifeTime(lifetime);
@@ -108,25 +121,63 @@ void ParticleSystem::addGenerator(GeneratorType type, PxVec3 pos, PxVec3 directi
     }
 }
 
+#pragma region Fuerzas
 
 void ParticleSystem::addGravity(PxVec3 g)
 {
-	fList.push_back(new GravityForce(g));
+    fList.push_back(new GravityForce(g));
 }
 
-void ParticleSystem::addWind(PxVec3 windVelocity, float k1, float k2, float duration) 
+void ParticleSystem::addWind(PxVec3 windVelocity, float k1, float k2, float duration)
 {
-	fList.push_back(new WindForce(windVelocity, k1, k2, duration));
+    fList.push_back(new WindForce(windVelocity, k1, k2, duration));
 }
 
-void ParticleSystem::addTornado(PxVec3 center, float intensity, float radius, float duration) 
+void ParticleSystem::addTornado(PxVec3 center, float intensity, float radius, float duration)
 {
     fList.push_back(new Tornado(center, intensity, radius, duration));
 }
 
-void ParticleSystem::addExplosion(PxVec3 center, float intensity, float radius, float tau) 
+void ParticleSystem::addExplosion(PxVec3 center, float intensity, float radius, float tau)
 {
     fList.push_back(new Explosion(center, intensity, radius, tau, pList));
+}
+void ParticleSystem::addSpring(Particle* other)
+{
+    fList.push_back(new SpringForceGenerator(1, 10, other));
+}
+#pragma endregion
+
+
+void ParticleSystem::generateSpringDemo()
+{
+    // First one standard spring uniting 2 particles
+    Particle* part1 = new Particle();
+    part1->setPosition(PxVec3(10, 10, 0));
+    Particle* part2 = new Particle();
+    part2->setPosition(PxVec3(-10, 10, 0));
+    part2->setMass(2);
+
+    addParticle(part1);
+    addParticle(part2);
+
+    SpringForceGenerator* f1 = new SpringForceGenerator(1, 10, part2);
+    fList.push_back(f1);
+    SpringForceGenerator* f2 = new SpringForceGenerator(1, 10, part1);
+    fList.push_back(f2);
+
+
+    //// Then one spring with one fixed side
+    //Particle p3;
+    //Particle* part3 = new Particle();
+    //part3->setPosition({ -10.0, 20.0, 0.0 });
+    //part3->setMass(2.0);
+    //addParticle(part3);
+
+    //AnchoredSpringFG* f3 = new AnchoredSpringFG(1, 10, { 10.0, 20.0, 0.0 });
+    //addForceToParticle(f3, part3);
+
+
 }
 
 

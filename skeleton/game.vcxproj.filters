@@ -21,6 +21,7 @@
     <ClCompile Include="Tornado.cpp" />
     <ClCompile Include="Explosion.cpp" />
     <ClCompile Include="SpringForceGenerator.cpp" />
+    <ClCompile Include="AnchoredSpringFG.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core.hpp" />
@@ -44,6 +45,7 @@
     <ClInclude Include="Tornado.h" />
     <ClInclude Include="Explosion.h" />
     <ClInclude Include="SpringForceGenerator.h" />
+    <ClInclude Include="AnchoredSpringFG.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Render">

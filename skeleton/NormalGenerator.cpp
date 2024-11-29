@@ -6,6 +6,15 @@ NormalGenerator::NormalGenerator(Particle* p, float rate, PxVec3 desv, float spa
 
 }
 
+NormalGenerator::~NormalGenerator()
+{
+    for (Particle* p : particles)
+    {
+        delete p; // Elimina cada partícula creada
+    }
+    particles.clear();
+}
+
 // using nd = normal_distribution<float>;
 Particle* NormalGenerator::emit()
 {
@@ -14,10 +23,12 @@ Particle* NormalGenerator::emit()
     nd distZ(velocidadMedia.z, desvVelo.z);
 
     PxVec3 randomVelocity(distX(randomizer), distY(randomizer), distZ(randomizer));
-    Particle* p = new Particle(particle);
+    Particle* p = new Particle();
 
     p->setVelocity(randomVelocity);
     p->setPosition(calculatePosition());
+
+    particles.push_back(p);
 
     return p;
 }

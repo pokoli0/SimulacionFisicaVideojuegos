@@ -3,43 +3,34 @@
 #include <iostream>
 #include "ParticleSystem.h"
 
-Particle::Particle(PxVec3 pos, PxVec3 velo, PxVec3 accele)
-	: transform(pos), vel(velo), accel(accele)
+Particle::Particle()
 {
-	damping = 0.99;
-	transform = physx::PxTransform(pos);
+	vel = PxVec3(0, 0, 0);
+	accel = PxVec3(0, 0, 0);
+	transform = PxTransform(PxVec3(0, 0, 0));
 
-	PxSphereGeometry geo(1);
-	PxShape* shape = CreateShape(geo);
-
+	PxShape* shape = CreateShape(PxSphereGeometry(1));
 	renderItem = new RenderItem(shape, &transform, Vector4(1, 0.5, 1, 1));
-	RegisterRenderItem(renderItem);
 
+	mass = 1;
+	center = PxVec3(0, 0, 0);
+	ratio = 50;
+	lifeTime = 50;
+	damping = 0.995;
 }
 
-Particle::Particle(PxVec3 pos, PxVec3 velo, PxVec3 accele, double lifetime)
-	: transform(pos), vel(velo), accel(accele), lifeTime(lifetime)
-{
-	damping = 0.99;
-	transform = physx::PxTransform(pos);
-	
-	PxSphereGeometry geo(1);
-	PxShape* shape = CreateShape(geo);
-
-	renderItem = new RenderItem(shape, &transform, Vector4(1, 0.5, 1, 1));
-	RegisterRenderItem(renderItem);
-	damping = 0.99;
-}
 
 Particle::Particle(Particle const& p)
 {
 	vel = p.vel;
 	accel = p.accel;
+
 	transform = PxTransform(p.transform.p);
 	PxShape* shape = CreateShape(PxSphereGeometry(1));
 	renderItem = new RenderItem(shape, &transform, Vector4(1, 0.5, 1, 1));
 
-	mass = 1;
+
+	mass = p.mass;
 	center = p.center;
 	ratio = p.ratio;
 	lifeTime = p.lifeTime;
@@ -48,13 +39,9 @@ Particle::Particle(Particle const& p)
 
 Particle::~Particle()
 {
+	delete renderItem;
 	DeregisterRenderItem(renderItem);
-}
 
-void Particle::addForce(PxVec3 f)
-{
-	PxVec3 a = f / mass;  // F = ma
-	accel += a;
 }
 
 void Particle::Integrate(double t, IntegrationType type)
@@ -84,6 +71,7 @@ bool Particle::updateLifeTime(double t)
 	return (lifeTime <= 0);
 
 }
+
 bool Particle::isOnRatio()
 {
 	return (transform.p - center).magnitude() < ratio;
