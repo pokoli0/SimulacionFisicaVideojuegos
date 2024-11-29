@@ -102,6 +102,7 @@ void ParticleSystem::destroyParticle(Particle* p)
 	}
 }
 
+#pragma region Generador
 void ParticleSystem::addGenerator(GeneratorType type, PxVec3 pos, PxVec3 direction, float rate, PxVec3 desv, 
     float range, float spawnR, GenDistribution sp, float rat, float lifetime)
 {
@@ -120,6 +121,7 @@ void ParticleSystem::addGenerator(GeneratorType type, PxVec3 pos, PxVec3 directi
         gList.push_back(new NormalGenerator(&p, rate, desv, spawnR, sp));
     }
 }
+#pragma endregion
 
 #pragma region Fuerzas
 
@@ -148,7 +150,7 @@ void ParticleSystem::addSpring(Particle* other)
 }
 #pragma endregion
 
-
+#pragma region Muelles
 void ParticleSystem::generateSpringDemo()
 {
     // First one standard spring uniting 2 particles
@@ -167,17 +169,17 @@ void ParticleSystem::generateSpringDemo()
     fList.push_back(f2);
 
 
-    //// Then one spring with one fixed side
-    //Particle p3;
-    //Particle* part3 = new Particle();
-    //part3->setPosition({ -10.0, 20.0, 0.0 });
-    //part3->setMass(2.0);
-    //addParticle(part3);
+    // Then one spring with one fixed side
 
-    //AnchoredSpringFG* f3 = new AnchoredSpringFG(1, 10, { 10.0, 20.0, 0.0 });
-    //addForceToParticle(f3, part3);
+    Particle* part3 = new Particle();
+    part3->setPosition(PxVec3(-10, 20, 0));
+    //part3->setMass(2.0);
+    addParticle(part3);
+
+    AnchoredSpringFG* f3 = new AnchoredSpringFG(1, 10, { 10.0, 20.0, 0.0 });
+    fList.push_back(f3);
 
 
 }
-
+#pragma endregion
 

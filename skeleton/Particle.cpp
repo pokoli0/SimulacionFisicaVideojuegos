@@ -8,11 +8,26 @@ Particle::Particle()
 	vel = PxVec3(0, 0, 0);
 	accel = PxVec3(0, 0, 0);
 	transform = PxTransform(PxVec3(0, 0, 0));
+	color = PxVec4(1, 0.5, 1, 1);
 
 	PxShape* shape = CreateShape(PxSphereGeometry(1));
-	renderItem = new RenderItem(shape, &transform, Vector4(1, 0.5, 1, 1));
+	renderItem = new RenderItem(shape, &transform, color);
 
 	mass = 1;
+	center = PxVec3(0, 0, 0);
+	ratio = 50;
+	lifeTime = 50;
+	damping = 0.995;
+}
+
+Particle::Particle(PxVec3 pos, PxVec3 velo, double m, PxVec4 col)
+	: transform(PxTransform(pos)), vel(velo), mass(m), color(col)
+{
+	accel = PxVec3(0, 0, 0);
+
+	PxShape* shape = CreateShape(PxSphereGeometry(1));
+	renderItem = new RenderItem(shape, &transform, color);
+
 	center = PxVec3(0, 0, 0);
 	ratio = 50;
 	lifeTime = 50;
@@ -24,10 +39,11 @@ Particle::Particle(Particle const& p)
 {
 	vel = p.vel;
 	accel = p.accel;
-
 	transform = PxTransform(p.transform.p);
+	color = p.color;
+
 	PxShape* shape = CreateShape(PxSphereGeometry(1));
-	renderItem = new RenderItem(shape, &transform, Vector4(1, 0.5, 1, 1));
+	renderItem = new RenderItem(shape, &transform, color);
 
 
 	mass = p.mass;
