@@ -86,8 +86,6 @@ void ParticleSystem::update(double t)
     }
 }
 
-
-
 void ParticleSystem::addParticle(Particle* p)
 {
 	pList.push_back(p);
@@ -148,6 +146,10 @@ void ParticleSystem::addSpring(Particle* other)
 {
     fList.push_back(new SpringForceGenerator(1, 10, other));
 }
+void ParticleSystem::addBuoyancy(float height, float volume, float density)
+{
+    fList.push_back(new BuoyantForce(height, volume, density));
+}
 #pragma endregion
 
 #pragma region Muelles
@@ -178,8 +180,6 @@ void ParticleSystem::generateSpringDemo()
 
     AnchoredSpringFG* f3 = new AnchoredSpringFG(1, 10, { 10.0, 20.0, 0.0 });
     fList.push_back(f3);
-
-
 }
 #pragma endregion
 

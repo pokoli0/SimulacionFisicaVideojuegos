@@ -122,7 +122,11 @@ void initPhysics(bool interactive)
 
 	/// ==== PRACTICA 4 ====
 
-	pSystem->generateSpringDemo();
+	//pSystem->generateSpringDemo();
+
+	Particle* p = new Particle(PxVec3(0, 10, 0), PxVec3(0, 0, 0), 1, PxVec4(1, 1, 0, 1));
+	pSystem->addParticle(p);
+	pSystem->addBuoyancy(10, 10, 1000);
 
 	
 }
@@ -151,12 +155,6 @@ void cleanupPhysics(bool interactive)
 {
 	PX_UNUSED(interactive);
 
-	// **** deregisters **** 
-	//DeregisterRenderItem(sphere);
-	//DeregisterRenderItem(xSphere);
-	//DeregisterRenderItem(ySphere);
-	//DeregisterRenderItem(zSphere);
-
 	delete pSystem;	
 
 	for (auto p : proyectiles) {
@@ -177,8 +175,13 @@ void cleanupPhysics(bool interactive)
 
 void InstanciaParticula() {
 	Particle* particle = new Particle();
-	particle->setPosition(PxVec3(GetCamera()->getTransform().p));
-	particle->setVelocity(PxVec3(GetCamera()->getDir() * 10));
+
+	//particle->setVelocity()
+	//PxVec3(GetCamera()->getTransform().p),
+	//	PxVec3(GetCamera()->getDir() * 10),
+	//	1,
+	//	PxVec4(1, 1, 1, 1)
+	//
 	pSystem->addParticle(particle);
 	proyectiles.push_back(particle);
 	cout << "Particulas: " << proyectiles.size() << endl;

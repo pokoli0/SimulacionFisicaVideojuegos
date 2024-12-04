@@ -18,6 +18,7 @@
 #include "Explosion.h"
 #include "SpringForceGenerator.h"
 #include "AnchoredSpringFG.h"
+#include "BuoyantForce.h"
 
 
 
@@ -52,6 +53,7 @@ public:
 	void addExplosion(PxVec3 center, float intensity, float radius, float tau);
 
 	void addSpring(Particle* other);
+	void addBuoyancy(float height, float volume, float density);
 
 	// muelles
 	void generateSpringDemo();
