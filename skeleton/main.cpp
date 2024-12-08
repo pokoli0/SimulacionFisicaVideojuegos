@@ -68,17 +68,6 @@ void initPhysics(bool interactive)
 
 	gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(),true,gPvd);
 
-	gMaterial = gPhysics->createMaterial(0.5f, 0.5f, 0.6f);
-
-	// For Solid Rigids +++++++++++++++++++++++++++++++++++++
-	PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
-	sceneDesc.gravity = PxVec3(0.0f, -9.8f, 0.0f);
-	gDispatcher = PxDefaultCpuDispatcherCreate(2);
-	sceneDesc.cpuDispatcher = gDispatcher;
-	sceneDesc.filterShader = contactReportFilterShader;
-	sceneDesc.simulationEventCallback = &gContactReportCallback;
-	gScene = gPhysics->createScene(sceneDesc);
-
 
 	/// ==== PRACTICA 1 ====
 	 
@@ -124,11 +113,25 @@ void initPhysics(bool interactive)
 
 	//pSystem->generateSpringDemo();
 
-	Particle* p = new Particle(PxVec3(0, 10, 0), PxVec3(0, 0, 0), 1, PxVec4(1, 1, 0, 1));
-	pSystem->addParticle(p);
-	pSystem->addBuoyancy(10, 10, 1000);
+	//Particle* p = new Particle(PxVec3(0, 10, 0), PxVec3(0, 0, 0), 1, PxVec4(1, 1, 0, 1));
+	//pSystem->addParticle(p);
+	//pSystem->addBuoyancy(10, 10, 1000);
 
 	
+	/// ==== PRACTICA 5 & PROYECTO ====
+
+	// --- Creacion de material ---
+	//createMaterial(staticFriction, dynamicFriction, restitution);
+	gMaterial = gPhysics->createMaterial(0.5f, 0.5f, 0.6f); // Para los solidos rigidos
+
+	// --- Creacion de escena ---
+	PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
+	sceneDesc.gravity = PxVec3(0.0f, -9.8f, 0.0f);
+	gDispatcher = PxDefaultCpuDispatcherCreate(2);
+	sceneDesc.cpuDispatcher = gDispatcher;
+	sceneDesc.filterShader = contactReportFilterShader;
+	sceneDesc.simulationEventCallback = &gContactReportCallback;
+	gScene = gPhysics->createScene(sceneDesc);
 }
 
 // Function to configure what happens in each step of physics
@@ -144,7 +147,7 @@ void stepPhysics(bool interactive, double t) // es como el update
 
 		proyectiles[i]->Integrate(t, Particle::IntegrationType::SEMIEULER);
 	}
-
+	
 	gScene->simulate(t);
 	gScene->fetchResults(true);
 }
