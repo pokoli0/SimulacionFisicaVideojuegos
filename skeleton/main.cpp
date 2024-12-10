@@ -12,6 +12,8 @@
 #include "Particle.h"
 #include "ParticleSystem.h"
 
+#include "RigidBody.h"
+
 #include <iostream>
 
 std::string display_text = "Paula Sierra Luque";
@@ -132,6 +134,41 @@ void initPhysics(bool interactive)
 	sceneDesc.filterShader = contactReportFilterShader;
 	sceneDesc.simulationEventCallback = &gContactReportCallback;
 	gScene = gPhysics->createScene(sceneDesc);
+
+	// Generar suelo
+	PxRigidStatic* Suelo = gPhysics->createRigidStatic(PxTransform({ 0,0,0 }));
+	PxShape* shape = CreateShape(PxBoxGeometry(100, 0.1, 100));
+	Suelo->attachShape(*shape);
+	gScene->addActor(*Suelo);
+
+	// Pintar suelo
+	RenderItem* item;
+	item = new RenderItem(shape, Suelo, { 0.8, 0.8, 0.8, 1 });
+
+	// Solido rigido dinamico
+	PxRigidDynamic* cubo = gPhysics->createRigidDynamic(PxTransform({ -70, 200, -70 }));
+	cubo->setLinearVelocity(PxVec3(0, 5, 0));
+	cubo->setAngularVelocity(PxVec3(0, 0, 0));
+
+	PxShape* a = CreateShape(PxBoxGeometry(5,5,5));
+	cubo->attachShape(*a);
+
+	PxRigidBodyExt::updateMassAndInertia(*cubo, 0.15f);
+	gScene->addActor(*cubo);
+
+	// Renderizar actor
+	RenderItem* dynamic = new RenderItem(a, cubo, { 0.8, 0.2, 0.2, 1 });
+
+	//RigidBody* rb = new RigidBody(
+	//	gPhysics,
+	//	gScene,
+	//	PxBoxGeometry(5, 5, 5),
+	//	PxTransform({ -70,100,-70 }),
+	//	0.15,
+	//	PxVec3(0, 5, 0),
+	//	PxVec4(0, 0, 1, 1)
+	//);
+
 }
 
 // Function to configure what happens in each step of physics
