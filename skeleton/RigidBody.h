@@ -19,7 +19,7 @@ public:
 private:
     PxRigidDynamic* body; // Actor dinámico de PhysX
     PxShape* shape;       // Forma del actor
-    RenderItem* renderItem; // Renderización asociada
+    RenderItem* renderItem = nullptr; // Renderización asociada
 
 };
 
