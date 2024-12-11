@@ -8,7 +8,7 @@ using namespace physx;
 class RigidBody {
 public:
     // Constructor
-    RigidBody(PxPhysics* physics, PxScene* scene, PxGeometry geometry, PxTransform transform,
+    RigidBody(PxPhysics* physics, PxScene* scene, const PxGeometry& geometry, PxTransform transform,
         float density, PxVec3 initialVelocity, PxVec4 color);
 
     ~RigidBody();
@@ -17,8 +17,8 @@ public:
     PxRigidDynamic* getBody() const { return body; }
 
 private:
-    PxRigidDynamic* body; // Actor dinámico de PhysX
-    PxShape* shape;       // Forma del actor
+    PxRigidDynamic* body = nullptr; // Actor dinámico de PhysX
+    PxShape* shape = nullptr;       // Forma del actor
     RenderItem* renderItem = nullptr; // Renderización asociada
 
 };

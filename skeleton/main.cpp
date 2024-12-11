@@ -70,6 +70,20 @@ void initPhysics(bool interactive)
 
 	gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(),true,gPvd);
 
+	// --- Creacion de material ---
+	//createMaterial(staticFriction, dynamicFriction, restitution);
+	gMaterial = gPhysics->createMaterial(0.5f, 0.5f, 0.6f); // Para los solidos rigidos
+
+	// --- Creacion de escena ---
+	PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
+	sceneDesc.gravity = PxVec3(0.0f, -9.8f, 0.0f);
+	gDispatcher = PxDefaultCpuDispatcherCreate(2);
+	sceneDesc.cpuDispatcher = gDispatcher;
+	sceneDesc.filterShader = contactReportFilterShader;
+	sceneDesc.simulationEventCallback = &gContactReportCallback;
+	gScene = gPhysics->createScene(sceneDesc);
+
+
 
 	/// ==== PRACTICA 1 ====
 	 
@@ -122,18 +136,7 @@ void initPhysics(bool interactive)
 	
 	/// ==== PRACTICA 5 & PROYECTO ====
 
-	// --- Creacion de material ---
-	//createMaterial(staticFriction, dynamicFriction, restitution);
-	gMaterial = gPhysics->createMaterial(0.5f, 0.5f, 0.6f); // Para los solidos rigidos
 
-	// --- Creacion de escena ---
-	PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
-	sceneDesc.gravity = PxVec3(0.0f, -9.8f, 0.0f);
-	gDispatcher = PxDefaultCpuDispatcherCreate(2);
-	sceneDesc.cpuDispatcher = gDispatcher;
-	sceneDesc.filterShader = contactReportFilterShader;
-	sceneDesc.simulationEventCallback = &gContactReportCallback;
-	gScene = gPhysics->createScene(sceneDesc);
 
 	// Generar suelo
 	PxRigidStatic* Suelo = gPhysics->createRigidStatic(PxTransform({ 0,0,0 }));
@@ -145,29 +148,16 @@ void initPhysics(bool interactive)
 	RenderItem* item;
 	item = new RenderItem(shape, Suelo, { 0.8, 0.8, 0.8, 1 });
 
-	// Solido rigido dinamico
-	PxRigidDynamic* cubo = gPhysics->createRigidDynamic(PxTransform({ -70, 200, -70 }));
-	cubo->setLinearVelocity(PxVec3(0, 5, 0));
-	cubo->setAngularVelocity(PxVec3(0, 0, 0));
-
-	PxShape* a = CreateShape(PxBoxGeometry(5,5,5));
-	cubo->attachShape(*a);
-
-	PxRigidBodyExt::updateMassAndInertia(*cubo, 0.15f);
-	gScene->addActor(*cubo);
-
-	// Renderizar actor
-	RenderItem* dynamic = new RenderItem(a, cubo, { 0.8, 0.2, 0.2, 1 });
-
-	//RigidBody* rb = new RigidBody(
-	//	gPhysics,
-	//	gScene,
-	//	PxBoxGeometry(5, 5, 5),
-	//	PxTransform({ -70,100,-70 }),
-	//	0.15,
-	//	PxVec3(0, 5, 0),
-	//	PxVec4(0, 0, 1, 1)
-	//);
+	// ---- Solido rigido dinamico ----
+	RigidBody* rb = new RigidBody(
+		gPhysics,
+		gScene,
+		PxBoxGeometry(5.0f, 5.0f, 5.0f),
+		PxTransform({-70, 100, -70}),
+		0.15f,
+		PxVec3(0, 5, 0),
+		PxVec4(0, 0, 1, 1)
+	);
 
 }
 

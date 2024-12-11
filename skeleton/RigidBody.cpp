@@ -1,23 +1,25 @@
 #include "RigidBody.h"
+#include <iostream>
 
-RigidBody::RigidBody(PxPhysics* physics, PxScene* scene, PxGeometry geometry, PxTransform transform, float density, PxVec3 initialVelocity, PxVec4 color)
+RigidBody::RigidBody(PxPhysics* physics, PxScene* scene, const PxGeometry& geometry, PxTransform transform, float density, PxVec3 initialVelocity, PxVec4 color)
 {
-	// Solido rigido dinamico
-	PxRigidDynamic* new_solid;
-	new_solid = physics->createRigidDynamic(transform);
-	new_solid->setLinearVelocity(initialVelocity);
-	new_solid->setAngularVelocity(PxVec3(0, 0, 0));
+    PxRigidDynamic* new_solid = physics->createRigidDynamic(transform);
 
-	PxShape* sh;
-	sh = CreateShape(geometry);
-	new_solid->attachShape(*sh);
+    new_solid->setLinearVelocity(initialVelocity);
+    new_solid->setAngularVelocity(PxVec3(0, 0, 0));
 
-	PxRigidBodyExt::updateMassAndInertia(*new_solid, density);
-	scene->addActor(*new_solid);
+    PxShape* sh = CreateShape(geometry);
 
-	// Renderizar actor
-	RenderItem* dynamic = new RenderItem(sh, new_solid, color);
+    new_solid->attachShape(*sh);
+
+    PxRigidBodyExt::updateMassAndInertia(*new_solid, density);
+
+    scene->addActor(*new_solid);
+
+    RenderItem* dynamic = new RenderItem(sh, new_solid, color);
 }
+
+
 
 RigidBody::~RigidBody()
 {
