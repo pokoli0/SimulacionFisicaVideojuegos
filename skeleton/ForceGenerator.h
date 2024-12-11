@@ -12,6 +12,8 @@ public:
 	~ForceGenerator();
 
 	virtual PxVec3 calculateForce(Particle* p) = 0;
+	virtual PxVec3 calculateForce(PxRigidDynamic* r) = 0;
+
 	virtual void update(double t) = 0;
 
 	// Getters

@@ -10,6 +10,8 @@ public:
 	virtual ~SpringForceGenerator(){}
 
 	virtual PxVec3 calculateForce(Particle* particle) override;
+	virtual PxVec3 calculateForce(PxRigidDynamic* r) override;
+
 	virtual void update(double t) override {}
 
 	inline void setK(double k) { K = k; }

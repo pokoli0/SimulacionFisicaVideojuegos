@@ -22,6 +22,11 @@ PxVec3 Explosion::calculateForce(Particle* p) {
     return force;
 }
 
+PxVec3 Explosion::calculateForce(PxRigidDynamic* r)
+{
+    return PxVec3();
+}
+
 void Explosion::update(double t) {
     elapsedTime += t; // Actualiza el tiempo transcurrido
 }

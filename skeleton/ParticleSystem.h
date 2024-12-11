@@ -41,8 +41,12 @@ public:
 	~ParticleSystem();
 
 	void update(double t);
+
 	void addParticle(Particle* p);
 	void destroyParticle(Particle* p);
+
+	void addRigidBody(PxRigidDynamic* rigid);
+	void destroyRigidBody(PxRigidDynamic* rigid);
 
 	void addGenerator(GeneratorType type, PxVec3 pos, PxVec3 direction, float rate, PxVec3 desv, 
 		float range, float spawnR, GenDistribution sp, float rat, float lifetime = 10.0f);
@@ -73,6 +77,10 @@ private:
 	// Fuerzas
 	list<ForceGenerator*> fList;
 	vector<ForceGenerator*> fToErase;
+
+	// Solidos
+	list<PxRigidDynamic*> rList;
+
 
 };
 

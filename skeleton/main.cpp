@@ -181,7 +181,8 @@ void initPhysics(bool interactive)
 		PxVec4(1, 0, 0, 1)                 // Color rojo
 	);
 
-
+	rb->getBody()->addForce(PxVec3(5, 0, 0));
+		
 }
 
 // Function to configure what happens in each step of physics

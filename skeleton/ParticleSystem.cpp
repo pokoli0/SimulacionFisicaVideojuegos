@@ -20,10 +20,15 @@ ParticleSystem::~ParticleSystem()
         delete f;
         f = nullptr;
     }
+    for (auto r : rList) {
+        //delete r;
+        r = nullptr;
+    }
 
 	pList.clear();
 	gList.clear();
     fList.clear();
+    rList.clear();
 }
 
 void ParticleSystem::update(double t)
@@ -59,6 +64,17 @@ void ParticleSystem::update(double t)
             it++;
         }
     }
+
+    for (auto rigid : rList) {
+        rigid->clearForce(PxForceMode::eFORCE); // Reiniciar fuerzas acumuladas
+        for (auto f : fList) {
+            if (f && f->isAlive()) {
+                PxVec3 force = f->calculateForce(rigid);
+                rigid->addForce(force);
+            }
+        }
+    }
+
 
     // Eliminar partículas y generadores inactivos
     for (auto p : toErase) {
@@ -99,6 +115,19 @@ void ParticleSystem::destroyParticle(Particle* p)
 		toErase.push_back(p);
 	}
 }
+
+void ParticleSystem::addRigidBody(PxRigidDynamic* rigid) {
+    rList.push_back(rigid);
+}
+
+void ParticleSystem::destroyRigidBody(PxRigidDynamic* rigid) {
+    auto it = std::find(rList.begin(), rList.end(), rigid);
+    if (it != rList.end()) {
+        rList.erase(it);
+        rigid->release();
+    }
+}
+
 
 #pragma region Generador
 void ParticleSystem::addGenerator(GeneratorType type, PxVec3 pos, PxVec3 direction, float rate, PxVec3 desv, 

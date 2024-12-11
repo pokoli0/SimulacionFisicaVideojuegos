@@ -33,3 +33,8 @@ PxVec3 BuoyantForce::calculateForce(Particle* p)
 
 	return f;
 }
+
+PxVec3 BuoyantForce::calculateForce(PxRigidDynamic* r)
+{
+    return PxVec3();
+}

@@ -21,6 +21,20 @@ PxVec3 WindForce::calculateForce(Particle* p)
     return force;
 }
 
+PxVec3 WindForce::calculateForce(PxRigidDynamic* r)
+{
+    if (!r) return PxVec3(0, 0, 0);
+
+    PxVec3 relativeVelocity = windVelocity - r->getLinearVelocity();
+    PxVec3 force = coeffK1 * relativeVelocity;
+
+    if (coeffK2 != 0.0f) {
+        force += coeffK2 * relativeVelocity.magnitude() * relativeVelocity;
+    }
+
+    return force;
+}
+
 void WindForce::update(double t)
 {
     if (duration > 0.0f) {
