@@ -11,6 +11,10 @@ public:
     RigidBody(PxPhysics* physics, PxScene* scene, const PxGeometry& geometry, PxTransform transform,
         float density, PxVec3 initialVelocity, PxVec4 color);
 
+    // Constructor con tensor de inercia
+    RigidBody(PxPhysics* physics, PxScene* scene, const PxGeometry& geometry, PxTransform transform,
+        float mass, PxVec3 inertiaTensor, PxVec3 initialVelocity, PxVec4 color);
+
     ~RigidBody();
 
     // Métodos para acceder al cuerpo dinámico

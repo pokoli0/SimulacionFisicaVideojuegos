@@ -76,7 +76,7 @@ void initPhysics(bool interactive)
 
 	// --- Creacion de escena ---
 	PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
-	sceneDesc.gravity = PxVec3(0.0f, -9.8f, 0.0f);
+	sceneDesc.gravity = PxVec3(0.0f, -9.8f, 0.0f); // Importante!!!
 	gDispatcher = PxDefaultCpuDispatcherCreate(2);
 	sceneDesc.cpuDispatcher = gDispatcher;
 	sceneDesc.filterShader = contactReportFilterShader;
@@ -134,9 +134,7 @@ void initPhysics(bool interactive)
 	//pSystem->addBuoyancy(10, 10, 1000);
 
 	
-	/// ==== PRACTICA 5 & PROYECTO ====
-
-
+	/// ==== PRACTICA 5 ====
 
 	// Generar suelo
 	PxRigidStatic* Suelo = gPhysics->createRigidStatic(PxTransform({ 0,0,0 }));
@@ -149,15 +147,40 @@ void initPhysics(bool interactive)
 	item = new RenderItem(shape, Suelo, { 0.8, 0.8, 0.8, 1 });
 
 	// ---- Solido rigido dinamico ----
+	//RigidBody* rb = new RigidBody(
+	//	gPhysics,
+	//	gScene,
+	//	PxBoxGeometry(5.0f, 5.0f, 5.0f),
+	//	PxTransform({-70, 100, -70}),
+	//	0.15f,
+	//	PxVec3(0, 5, 0),
+	//	PxVec4(0, 0, 1, 1)
+	//);
+
+	// Dimensiones del cuboide
+	float a = 5.0f; // Largo
+	float b = 3.0f; // Ancho
+	float c = 2.0f; // Altura
+	float mass = 10.0f; // Masa
+
+	// Calcular tensores de inercia
+	PxVec3 inertiaTensor;
+	inertiaTensor.x = (1.0f / 12.0f) * mass * (b * b + c * c);
+	inertiaTensor.y = (1.0f / 12.0f) * mass * (a * a + c * c);
+	inertiaTensor.z = (1.0f / 12.0f) * mass * (a * a + b * b);
+
+	// Crear el objeto RigidBody con tensor de inercia
 	RigidBody* rb = new RigidBody(
 		gPhysics,
 		gScene,
-		PxBoxGeometry(5.0f, 5.0f, 5.0f),
-		PxTransform({-70, 100, -70}),
-		0.15f,
-		PxVec3(0, 5, 0),
-		PxVec4(0, 0, 1, 1)
+		PxBoxGeometry(a / 2, b / 2, c / 2), // PxBoxGeometry usa la mitad de las dimensiones
+		PxTransform({ 0, 10, 0 }),           // Transform inicial
+		mass,                              // Masa
+		inertiaTensor,                     // Tensor de inercia
+		PxVec3(0, 0, 0),                   // Velocidad inicial
+		PxVec4(1, 0, 0, 1)                 // Color rojo
 	);
+
 
 }
 
