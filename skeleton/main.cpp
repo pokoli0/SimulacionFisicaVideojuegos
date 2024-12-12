@@ -14,7 +14,13 @@
 
 #include "RigidBody.h"
 
+
+#include "Game.h"
+#include "Level1.h"
+
 #include <iostream>
+
+Game* game = nullptr;
 
 std::string display_text = "Paula Sierra Luque";
 
@@ -136,15 +142,15 @@ void initPhysics(bool interactive)
 	
 	/// ==== PRACTICA 5 ====
 
-	// Generar suelo
-	PxRigidStatic* Suelo = gPhysics->createRigidStatic(PxTransform({ 0,0,0 }));
-	PxShape* shape = CreateShape(PxBoxGeometry(100, 0.1, 100));
-	Suelo->attachShape(*shape);
-	gScene->addActor(*Suelo);
+	//// Generar suelo
+	//PxRigidStatic* Suelo = gPhysics->createRigidStatic(PxTransform({ 0,0,0 }));
+	//PxShape* shape = CreateShape(PxBoxGeometry(100, 0.1, 100));
+	//Suelo->attachShape(*shape);
+	//gScene->addActor(*Suelo);
 
-	// Pintar suelo
-	RenderItem* item;
-	item = new RenderItem(shape, Suelo, { 0.8, 0.8, 0.8, 1 });
+	//// Pintar suelo
+	//RenderItem* item;
+	//item = new RenderItem(shape, Suelo, { 0.8, 0.8, 0.8, 1 });
 
 	// ---- Solido rigido dinamico ----
 	//RigidBody* rb = new RigidBody(
@@ -157,33 +163,44 @@ void initPhysics(bool interactive)
 	//	PxVec4(0, 0, 1, 1)
 	//);
 
-	// Dimensiones del cuboide
-	float a = 5.0f; // Largo
-	float b = 3.0f; // Ancho
-	float c = 2.0f; // Altura
-	float mass = 1; // Masa
+	//// Dimensiones del cuboide
+	//float a = 5.0f; // Largo
+	//float b = 3.0f; // Ancho
+	//float c = 2.0f; // Altura
+	//float mass = 1; // Masa
 
-	// Calcular tensores de inercia
-	PxVec3 inertiaTensor;
-	inertiaTensor.x = (1.0f / 12.0f) * mass * (b * b + c * c);
-	inertiaTensor.y = (1.0f / 12.0f) * mass * (a * a + c * c);
-	inertiaTensor.z = (1.0f / 12.0f) * mass * (a * a + b * b);
+	//// Calcular tensores de inercia
+	//PxVec3 inertiaTensor;
+	//inertiaTensor.x = (1.0f / 12.0f) * mass * (b * b + c * c);
+	//inertiaTensor.y = (1.0f / 12.0f) * mass * (a * a + c * c);
+	//inertiaTensor.z = (1.0f / 12.0f) * mass * (a * a + b * b);
 
-	// Crear el objeto RigidBody con tensor de inercia
-	RigidBody* rb = new RigidBody(
-		gPhysics,
-		gScene,
-		PxBoxGeometry(a / 2, b / 2, c / 2), // PxBoxGeometry usa la mitad de las dimensiones
-		PxTransform({ 0, 10, 0 }),           // Transform inicial
-		mass,                              // Masa
-		inertiaTensor,                     // Tensor de inercia
-		PxVec3(0, 0, 0),                   // Velocidad inicial
-		PxVec4(1, 0, 0, 1)                 // Color rojo
-	);
+	//// Crear el objeto RigidBody con tensor de inercia
+	//RigidBody* rb = new RigidBody(
+	//	gPhysics,
+	//	gScene,
+	//	PxBoxGeometry(a / 2, b / 2, c / 2), // PxBoxGeometry usa la mitad de las dimensiones
+	//	PxTransform({ 0, 10, 0 }),           // Transform inicial
+	//	mass,                              // Masa
+	//	inertiaTensor,                     // Tensor de inercia
+	//	PxVec3(0, 0, 0),                   // Velocidad inicial
+	//	PxVec4(1, 0, 0, 1)                 // Color rojo
+	//);
 
-	pSystem->addRigidBody(rb);
+	//pSystem->addRigidBody(rb);
 
 	//pSystem->addWind(PxVec3(20, 0, 0), 0.5f);
+
+
+	/// ==== PROYECTO ====
+	game = new Game(gPhysics, gScene);
+
+	Level1* level1 = new Level1(gPhysics, gScene);
+
+	game->addScene(level1);
+
+	game->setActiveScene(0);
+
 }
 
 // Function to configure what happens in each step of physics
@@ -195,10 +212,12 @@ void stepPhysics(bool interactive, double t) // es como el update
 
 	PX_UNUSED(interactive);
 
-	for (int i = 0; i < proyectiles.size(); i++) {
+	game->update(t);
 
-		proyectiles[i]->Integrate(t, Particle::IntegrationType::SEMIEULER);
-	}
+	//for (int i = 0; i < proyectiles.size(); i++) {
+
+	//	proyectiles[i]->Integrate(t, Particle::IntegrationType::SEMIEULER);
+	//}
 	
 	gScene->simulate(t);
 	gScene->fetchResults(true);
@@ -215,6 +234,8 @@ void cleanupPhysics(bool interactive)
 	for (auto p : proyectiles) {
 		delete p;
 	}
+
+	delete game;
 
 	// Rigid Body ++++++++++++++++++++++++++++++++++++++++++
 	gScene->release();
@@ -245,6 +266,8 @@ void InstanciaParticula() {
 // Function called when a key is pressed
 void keyPress(unsigned char key, const PxTransform& camera) //input 
 {
+	game->keyPressed(key, camera);
+
 	PX_UNUSED(camera);
 
 	switch(toupper(key))

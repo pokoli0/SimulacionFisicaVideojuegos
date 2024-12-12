@@ -24,6 +24,9 @@
     <ClCompile Include="AnchoredSpringFG.cpp" />
     <ClCompile Include="BuoyantForce.cpp" />
     <ClCompile Include="RigidBody.cpp" />
+    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="Level1.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core.hpp" />
@@ -50,6 +53,9 @@
     <ClInclude Include="AnchoredSpringFG.h" />
     <ClInclude Include="BuoyantForce.h" />
     <ClInclude Include="RigidBody.h" />
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="Scene.h" />
+    <ClInclude Include="Level1.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Render">

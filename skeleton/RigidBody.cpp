@@ -8,22 +8,22 @@ RigidBody::RigidBody(PxPhysics* physics, PxScene* scene)
 RigidBody::RigidBody(PxPhysics* physics, PxScene* scene, const PxGeometry& geometry, PxTransform transform, float density, PxVec3 initialVelocity, PxVec4 color)
 {
     // Creacion del solido
-    PxRigidDynamic* new_solid = physics->createRigidDynamic(transform);
+    body = physics->createRigidDynamic(transform);
 
-    new_solid->setLinearVelocity(initialVelocity);
-    new_solid->setAngularVelocity(PxVec3(0, 0, 0));
+    body->setLinearVelocity(initialVelocity);
+    body->setAngularVelocity(PxVec3(0, 0, 0));
 
     // Asociar forma
     PxShape* sh = CreateShape(geometry);
-    new_solid->attachShape(*sh);
+    body->attachShape(*sh);
 
     // Masa y tensor de inercia
-    PxRigidBodyExt::updateMassAndInertia(*new_solid, density);
+    PxRigidBodyExt::updateMassAndInertia(*body, density);
 
     // Para que le afecten las fisicas de la escena e interactue con otros solidos
-    scene->addActor(*new_solid);
+    scene->addActor(*body);
 
-    RenderItem* dynamic = new RenderItem(sh, new_solid, color);
+    RenderItem* dynamic = new RenderItem(sh, body, color);
 }
 
 RigidBody::RigidBody(PxPhysics* physics, PxScene* scene, const PxGeometry& geometry, PxTransform transform, float mass, PxVec3 inertiaTensor, PxVec3 initialVelocity, PxVec4 color)
