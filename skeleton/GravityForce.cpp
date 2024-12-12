@@ -21,9 +21,9 @@ PxVec3 GravityForce::calculateForce(Particle* p)
 	return p->getMass() * gAcceleration;
 }
 
-PxVec3 GravityForce::calculateForce(PxRigidDynamic* p)
+PxVec3 GravityForce::calculateForce(RigidBody* p)
 {
-	return p->getMass() * gAcceleration;
+	return p->getBody()->getMass() * gAcceleration;
 }
 
 void GravityForce::update(double t)

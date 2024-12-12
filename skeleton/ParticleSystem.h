@@ -6,6 +6,7 @@
 #include <iostream>
 
 #include "Particle.h"
+#include "RigidBody.h"
 
 #include "ParticleGenerator.h"
 #include "UniformGenerator.h"
@@ -26,6 +27,7 @@ using namespace physx;
 using namespace std;
 
 class Particle;
+class RigidBody;
 class ParticleGenerator;
 
 enum GeneratorType {
@@ -45,8 +47,8 @@ public:
 	void addParticle(Particle* p);
 	void destroyParticle(Particle* p);
 
-	void addRigidBody(PxRigidDynamic* rigid);
-	void destroyRigidBody(PxRigidDynamic* rigid);
+	void addRigidBody(RigidBody* rigid);
+	void destroyRigidBody(RigidBody* rigid);
 
 	void addGenerator(GeneratorType type, PxVec3 pos, PxVec3 direction, float rate, PxVec3 desv, 
 		float range, float spawnR, GenDistribution sp, float rat, float lifetime = 10.0f);
@@ -69,7 +71,7 @@ public:
 private:
 
 	list<Particle*> pList;
-	vector<Particle*> toErase;
+	vector<Particle*> pToErase;
 
 	vector<ParticleGenerator*> gList;
 	vector<ParticleGenerator*> gToErase;
@@ -79,7 +81,8 @@ private:
 	vector<ForceGenerator*> fToErase;
 
 	// Solidos
-	list<PxRigidDynamic*> rList;
+	list<RigidBody*> rList;
+	vector<RigidBody*> rToErase;
 
 
 };

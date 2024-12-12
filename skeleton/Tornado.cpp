@@ -22,11 +22,11 @@ PxVec3 Tornado::calculateForce(Particle* p)
     return force;
 }
 
-PxVec3 Tornado::calculateForce(PxRigidDynamic* rigid) {
+PxVec3 Tornado::calculateForce(RigidBody* rigid) {
     if (!rigid) return PxVec3(0, 0, 0);
 
     // Posición del sólido rígido
-    PxVec3 pos = rigid->getGlobalPose().p;
+    PxVec3 pos = rigid->getBody()->getGlobalPose().p;
 
     // Fórmula del torbellino para sólidos rígidos
     PxVec3 force = K * PxVec3(

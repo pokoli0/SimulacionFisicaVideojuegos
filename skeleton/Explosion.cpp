@@ -22,7 +22,7 @@ PxVec3 Explosion::calculateForce(Particle* p) {
     return force;
 }
 
-PxVec3 Explosion::calculateForce(PxRigidDynamic* r)
+PxVec3 Explosion::calculateForce(RigidBody* r)
 {
     return PxVec3();
 }

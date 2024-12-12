@@ -10,7 +10,7 @@ public:
 
 	// f = m*a
 	PxVec3 calculateForce(Particle* p) override;
-	PxVec3 calculateForce(PxRigidDynamic* p) override;
+	PxVec3 calculateForce(RigidBody* p) override;
 
 	void update(double t) override;
 

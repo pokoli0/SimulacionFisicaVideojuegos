@@ -3,6 +3,8 @@
 #include <vector>
 
 #include "Particle.h"
+#include "RigidBody.h"
+
 #include <iostream>
 
 class ForceGenerator
@@ -12,7 +14,7 @@ public:
 	~ForceGenerator();
 
 	virtual PxVec3 calculateForce(Particle* p) = 0;
-	virtual PxVec3 calculateForce(PxRigidDynamic* r) = 0;
+	virtual PxVec3 calculateForce(RigidBody* r) = 0;
 
 	virtual void update(double t) = 0;
 

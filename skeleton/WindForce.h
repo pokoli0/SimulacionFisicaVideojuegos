@@ -9,7 +9,7 @@ public:
     ~WindForce() {}
 
     PxVec3 calculateForce(Particle* p) override;
-    PxVec3 calculateForce(PxRigidDynamic* r) override;
+    PxVec3 calculateForce(RigidBody* r) override;
 
     void update(double t) override;
 

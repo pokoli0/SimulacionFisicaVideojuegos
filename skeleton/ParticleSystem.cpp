@@ -33,9 +33,10 @@ ParticleSystem::~ParticleSystem()
 
 void ParticleSystem::update(double t)
 {
-    toErase.clear();
+    pToErase.clear();
     fToErase.clear();
     gToErase.clear();
+    rToErase.clear();
 
     // Actualizar todos los generadores
     for (auto g : gList) {
@@ -65,19 +66,22 @@ void ParticleSystem::update(double t)
         }
     }
 
-    for (auto rigid : rList) {
-        rigid->clearForce(PxForceMode::eFORCE); // Reiniciar fuerzas acumuladas
-        for (auto f : fList) {
-            if (f && f->isAlive()) {
-                PxVec3 force = f->calculateForce(rigid);
-                rigid->addForce(force);
+    // Actualizar sólidos rígidos
+    for (RigidBody* rb : rList) {
+        if (rb) {
+            rb->getBody()->clearForce(PxForceMode::eFORCE);
+
+            for (auto f : fList) {
+                if (f && f->isAlive()) {
+                    const PxVec3 force = f->calculateForce(rb);
+                    rb->getBody()->addForce(force);
+                }
             }
         }
     }
 
-
     // Eliminar partículas y generadores inactivos
-    for (auto p : toErase) {
+    for (auto p : pToErase) {
         auto it = std::find(pList.begin(), pList.end(), p);
         if (it != pList.end()) {
             pList.erase(it);
@@ -100,6 +104,14 @@ void ParticleSystem::update(double t)
             delete g;
         }
     }
+
+    for (auto r : rToErase) {
+        auto it = std::find(rList.begin(), rList.end(), r);
+        if (it != rList.end()) {
+            rList.erase(it);
+            delete r;
+        }
+    }
 }
 
 void ParticleSystem::addParticle(Particle* p)
@@ -112,19 +124,18 @@ void ParticleSystem::addParticle(Particle* p)
 void ParticleSystem::destroyParticle(Particle* p)
 {
 	if (p != nullptr && p->getIterator() != pList.end()) {
-		toErase.push_back(p);
+		pToErase.push_back(p);
 	}
 }
 
-void ParticleSystem::addRigidBody(PxRigidDynamic* rigid) {
+void ParticleSystem::addRigidBody(RigidBody* rigid) {
     rList.push_back(rigid);
+    rigid->setIterator(--rList.end());
 }
 
-void ParticleSystem::destroyRigidBody(PxRigidDynamic* rigid) {
-    auto it = std::find(rList.begin(), rList.end(), rigid);
-    if (it != rList.end()) {
-        rList.erase(it);
-        rigid->release();
+void ParticleSystem::destroyRigidBody(RigidBody* rigid) {
+    if (rigid != nullptr && rigid->getIterator() != rList.end()) {
+        rToErase.push_back(rigid);
     }
 }
 

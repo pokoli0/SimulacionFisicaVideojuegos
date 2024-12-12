@@ -20,7 +20,7 @@ PxVec3 SpringForceGenerator::calculateForce(Particle* particle)
 	return force;
 }
 
-PxVec3 SpringForceGenerator::calculateForce(PxRigidDynamic* r)
+PxVec3 SpringForceGenerator::calculateForce(RigidBody* r)
 {
 	return PxVec3();
 }

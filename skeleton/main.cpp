@@ -120,7 +120,7 @@ void initPhysics(bool interactive)
 
 	/// ==== PRACTICA 3 ====
 
-	pSystem->addGravity(PxVec3(0, -9.8f, 0));
+	//pSystem->addGravity(PxVec3(0, -9.8f, 0));
 	//pSystem->addWind(PxVec3(30, 0, 0), 0.5f); // viento hacia la derecha
 	//pSystem->addTornado(PxVec3(0, 0, 0), 20, 50, -1.0f); // tornado con centro , intensidad, radio y duracion infinita (-1)
 
@@ -161,7 +161,7 @@ void initPhysics(bool interactive)
 	float a = 5.0f; // Largo
 	float b = 3.0f; // Ancho
 	float c = 2.0f; // Altura
-	float mass = 10.0f; // Masa
+	float mass = 1; // Masa
 
 	// Calcular tensores de inercia
 	PxVec3 inertiaTensor;
@@ -181,7 +181,9 @@ void initPhysics(bool interactive)
 		PxVec4(1, 0, 0, 1)                 // Color rojo
 	);
 
-	rb->getBody()->addForce(PxVec3(5, 0, 0));
+	pSystem->addRigidBody(rb);
+
+	pSystem->addWind(PxVec3(30, 0, 0), 0.5f); // viento hacia la derecha
 		
 }
 
