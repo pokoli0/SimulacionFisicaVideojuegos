@@ -1,7 +1,7 @@
 #include "GravityForce.h"
 
 GravityForce::GravityForce(PxVec3 g, float dur)
-	: gAcceleration(g), ForceGenerator(dur)
+	: gAcceleration(g), ForceGenerator(dur, ForceType::GRAVITY)
 {
 	duration = dur;
 	gAcceleration = PxVec3(0, -9.8f, 0); // def

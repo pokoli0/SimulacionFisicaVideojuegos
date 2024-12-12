@@ -1,6 +1,10 @@
 #include "RigidBody.h"
 #include <iostream>
 
+RigidBody::RigidBody(PxPhysics* physics, PxScene* scene)
+{
+}
+
 RigidBody::RigidBody(PxPhysics* physics, PxScene* scene, const PxGeometry& geometry, PxTransform transform, float density, PxVec3 initialVelocity, PxVec4 color)
 {
     // Creacion del solido

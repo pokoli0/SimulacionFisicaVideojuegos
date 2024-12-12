@@ -1,6 +1,7 @@
 #include "BuoyantForce.h"
 
 BuoyantForce::BuoyantForce(float h, float V, float d)
+    : ForceGenerator(duration, ForceType::BUOYANT)
 {
     _height = h;
     _volume = V;

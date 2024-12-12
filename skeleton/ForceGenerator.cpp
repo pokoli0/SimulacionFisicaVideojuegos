@@ -1,7 +1,7 @@
 #include "ForceGenerator.h"
 
-ForceGenerator::ForceGenerator(float dur)
-    : duration(dur), alive(true)  // Marca como vivo al inicio
+ForceGenerator::ForceGenerator(float dur, ForceType t)
+    : duration(dur), alive(true), type(t)
 {
     if (duration <= 0.0f) {
         alive = true;  // Fuerza infinita, siempre viva

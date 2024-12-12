@@ -61,8 +61,11 @@ public:
 	void addSpring(Particle* other);
 	void addBuoyancy(float height, float volume, float density);
 
+	void removeForce(ForceType type);
+
 	// muelles
-	void generateSpringDemo();
+	void generateParticleSpringDemo();
+	void generateRBSpringDemo(PxPhysics* physics, PxScene* sc);
 
 	// getters & setters
 	double getParticleLifeTime(Particle* p) { return p->getLifeTime(); }

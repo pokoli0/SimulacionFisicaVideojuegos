@@ -1,7 +1,7 @@
 #include "WindForce.h"
 
 WindForce::WindForce(PxVec3 windVel, float k1, float k2, float dur)
-    : windVelocity(windVel), coeffK1(k1), coeffK2(k2), ForceGenerator(dur) 
+    : windVelocity(windVel), coeffK1(k1), coeffK2(k2), ForceGenerator(dur, ForceType::WIND) 
 {
 
 }

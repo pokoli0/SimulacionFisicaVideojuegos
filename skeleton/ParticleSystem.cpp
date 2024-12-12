@@ -190,10 +190,20 @@ void ParticleSystem::addBuoyancy(float height, float volume, float density)
 {
     fList.push_back(new BuoyantForce(height, volume, density));
 }
+
+void ParticleSystem::removeForce(ForceType type) {
+    for (auto it = fList.begin(); it != fList.end(); ++it) {
+        if ((*it)->getForceType() == type) {
+            delete* it;
+            fList.erase(it);
+            break;
+        }
+    }
+}
 #pragma endregion
 
 #pragma region Muelles
-void ParticleSystem::generateSpringDemo()
+void ParticleSystem::generateParticleSpringDemo()
 {
     // First one standard spring uniting 2 particles
     Particle* part1 = new Particle();
@@ -220,6 +230,33 @@ void ParticleSystem::generateSpringDemo()
 
     AnchoredSpringFG* f3 = new AnchoredSpringFG(1, 10, { 10.0, 20.0, 0.0 });
     fList.push_back(f3);
+}
+void ParticleSystem::generateRBSpringDemo(PxPhysics* physics, PxScene* sc)
+{
+    RigidBody* part1 = new RigidBody(physics, sc);
+    part1->getBody()->setGlobalPose(PxTransform(PxVec3(10, 10, 0)));
+    RigidBody* part2 = new RigidBody(physics, sc);
+    part2->getBody()->setGlobalPose(PxTransform(PxVec3(-10, 10, 0)));
+    part2->getBody()->setMass(2);
+
+    addRigidBody(part1);
+    addRigidBody(part2);
+
+    //SpringForceGenerator* f1 = new SpringForceGenerator(1, 10, part2);
+    //fList.push_back(f1);
+    //SpringForceGenerator* f2 = new SpringForceGenerator(1, 10, part1);
+    //fList.push_back(f2);
+
+
+    //// Then one spring with one fixed side
+
+    //RigidBody* part3 = new RigidBody();
+    //part3->setPosition(PxVec3(-10, 20, 0));
+    ////part3->setMass(2.0);
+    //addRigidBody(part3);
+
+    //AnchoredSpringFG* f3 = new AnchoredSpringFG(1, 10, { 10.0, 20.0, 0.0 });
+    //fList.push_back(f3);
 }
 #pragma endregion
 

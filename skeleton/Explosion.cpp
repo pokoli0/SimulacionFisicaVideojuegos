@@ -2,11 +2,11 @@
 #include <cmath>
 
 Explosion::Explosion(PxVec3 center, float intensity, float radius, float tau, const std::list<Particle*>& particles)
-    : ForceGenerator(-1.0f), explosionCenter(center), intensity(intensity), radius(radius), tau(tau), elapsedTime(0), affectedParticles(particles) 
+    : ForceGenerator(-1.0f, ForceType::EXPLOSION), explosionCenter(center), intensity(intensity), radius(radius), tau(tau), elapsedTime(0), affectedParticles(particles)
 {}
 
 Explosion::Explosion(PxVec3 center, float intensity, float radius, float tau, const std::list<RigidBody*>& bodies)
-    : ForceGenerator(-1.0f), explosionCenter(center), intensity(intensity), radius(radius), tau(tau), elapsedTime(0), affectedRB(bodies)
+    : ForceGenerator(-1.0f, ForceType::EXPLOSION), explosionCenter(center), intensity(intensity), radius(radius), tau(tau), elapsedTime(0), affectedRB(bodies)
 {}
 
 Explosion::~Explosion()

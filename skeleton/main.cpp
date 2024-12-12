@@ -183,8 +183,7 @@ void initPhysics(bool interactive)
 
 	pSystem->addRigidBody(rb);
 
-	pSystem->addWind(PxVec3(30, 0, 0), 0.5f); // viento hacia la derecha
-		
+	//pSystem->addWind(PxVec3(20, 0, 0), 0.5f);
 }
 
 // Function to configure what happens in each step of physics
@@ -263,10 +262,14 @@ void keyPress(unsigned char key, const PxTransform& camera) //input
 		);
 		break;
 
-	case ' ':
-	
+	case 'Q':
+		pSystem->removeForce(ForceType::GRAVITY);
 		break;
 	
+	case 'O':
+		pSystem->addGravity(PxVec3(0, 9.8, 0)); // Hacia arriba
+		break;
+
 	default:
 		break;
 	}
