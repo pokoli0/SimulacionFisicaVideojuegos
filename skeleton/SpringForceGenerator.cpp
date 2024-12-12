@@ -4,12 +4,12 @@ SpringForceGenerator::SpringForceGenerator(double kCoeff, double _restingLength,
 {
 	K = kCoeff;
 	restingLength = _restingLength;
-	other = _other;
+	otherP = _other;
 }
 
 PxVec3 SpringForceGenerator::calculateForce(Particle* particle)
 {
-	PxVec3 relative_pos_vector = other->getPosition() - particle->getPosition();
+	PxVec3 relative_pos_vector = otherP->getPosition() - particle->getPosition();
 	PxVec3 force;
 
 	const float length = relative_pos_vector.normalize();
@@ -22,5 +22,13 @@ PxVec3 SpringForceGenerator::calculateForce(Particle* particle)
 
 PxVec3 SpringForceGenerator::calculateForce(RigidBody* r)
 {
-	return PxVec3();
+	PxVec3 relative_pos_vector = otherP->getPosition() - r->getBody()->getGlobalPose().p;
+	PxVec3 force;
+
+	const float length = relative_pos_vector.normalize();
+	const float deltaX = length - restingLength;
+
+	force = relative_pos_vector * deltaX * K;
+
+	return force;
 }

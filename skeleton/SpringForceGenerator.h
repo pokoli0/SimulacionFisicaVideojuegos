@@ -19,6 +19,6 @@ public:
 protected:
 	double K; 
 	double restingLength;
-	Particle* other;
+	Particle* otherP;
 };
 

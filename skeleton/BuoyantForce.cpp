@@ -34,7 +34,26 @@ PxVec3 BuoyantForce::calculateForce(Particle* p)
 	return f;
 }
 
-PxVec3 BuoyantForce::calculateForce(RigidBody* r)
+PxVec3 BuoyantForce::calculateForce(RigidBody* r) 
 {
-    return PxVec3();
+    if (r == nullptr) return PxVec3(0, 0, 0);
+
+    const float h = r->getBody()->getGlobalPose().p.y;
+    const float h0 = _liquid_particle->getPosition().y;
+
+    PxVec3 f(0, 0, 0);
+    float immersed = 0.0f;
+    if (h - h0 > _height * 0.5f) {
+        immersed = 0.0f;
+    }
+    else if (h0 - h > _height * 0.5f) {
+        immersed = 1.0f;
+    }
+    else {
+        immersed = (h0 - h) / _height + 0.5f;
+    }
+
+    f.y = _liquid_density * _volume * immersed * 9.8f;
+
+    return f;
 }
