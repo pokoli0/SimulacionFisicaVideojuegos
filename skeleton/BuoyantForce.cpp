@@ -6,7 +6,6 @@ BuoyantForce::BuoyantForce(float h, float V, float d)
     _height = h;
     _volume = V;
     _liquid_density = d;
-    _depth = 10;
 
     _liquid_particle = new Particle(PxVec3(0, 0, 0), PxVec3(0, 0, 0), 1, PxVec4(0, 1, 1, 1), PxBoxGeometry(10,3,10));
 }
@@ -20,7 +19,7 @@ PxVec3 BuoyantForce::calculateForce(Particle* p)
 {
     if (p == nullptr) cout << "Particula nula" << endl;
 
-    const float h = p->getPosition().y + _depth;
+    const float h = p->getPosition().y;
     const float h0 = _liquid_particle->getPosition().y;
 
     Vector3 f(0, 0, 0);
@@ -45,7 +44,7 @@ PxVec3 BuoyantForce::calculateForce(RigidBody* r)
 {
     if (r == nullptr) return PxVec3(0, 0, 0);
 
-    const float h = r->getBody()->getGlobalPose().p.y + _depth;
+    const float h = r->getBody()->getGlobalPose().p.y;
     const float h0 = _liquid_particle->getPosition().y;
 
     PxVec3 f(0, 0, 0);

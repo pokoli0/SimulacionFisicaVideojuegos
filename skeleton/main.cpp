@@ -135,9 +135,9 @@ void initPhysics(bool interactive)
 
 	//pSystem->generateParticleSpringDemo();
 
-	Particle* p = new Particle(PxVec3(0, 10, 0), PxVec3(0, 0, 0), 1, PxVec4(1, 1, 0, 1), PxSphereGeometry(1));
-	pSystem->addParticle(p);
-	pSystem->addBuoyancy(10, 10, 1000);
+	//Particle* p = new Particle(PxVec3(0, 10, 0), PxVec3(0, 0, 0), 1500, PxVec4(1, 1, 0, 1), PxSphereGeometry(1));
+	//pSystem->addParticle(p);
+	//pSystem->addBuoyancy(10, 10, 1000);
 
 	
 	/// ==== PRACTICA 5 ====
@@ -194,13 +194,13 @@ void initPhysics(bool interactive)
 
 	/// ==== PROYECTO ====
 
-	//game = new Game(gPhysics, gScene);
+	game = new Game(gPhysics, gScene);
 
-	//Level1* level1 = new Level1(gPhysics, gScene);
+	Level1* level1 = new Level1(gPhysics, gScene);
 
-	//game->addScene(level1);
+	game->addScene(level1);
 
-	//game->setActiveScene(0);
+	game->setActiveScene(0);
 
 }
 

@@ -21,7 +21,6 @@ protected:
 	float _volume;
 	float _liquid_density;
 	float _gravity = 9.8;
-	float _depth;
 
 	Particle* _liquid_particle; // For representation
 };
