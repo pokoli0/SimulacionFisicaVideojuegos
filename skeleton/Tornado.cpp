@@ -11,7 +11,6 @@ PxVec3 Tornado::calculateForce(Particle* p)
     // Posición de la partícula
     const PxVec3 pos = p->getPosition();
 
-
     // Fórmula del torbellino
     const PxVec3 force = K * PxVec3(
         - (pos.z - center.z),       // - (z - z_c)

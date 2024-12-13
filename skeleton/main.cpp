@@ -118,7 +118,7 @@ void initPhysics(bool interactive)
 	//	25, //rate
 	//	Vector3(10, 0.0001, 10), // desv
 	//	20, //range
-	//	20, //spawn range
+	//	5, //spawn range
 	//	GenDistribution::UNIFORMDIST, 
 	//	50, //ratio
 	//	10); //lifetime
@@ -126,18 +126,18 @@ void initPhysics(bool interactive)
 
 	/// ==== PRACTICA 3 ====
 
-	//pSystem->addGravity(PxVec3(0, -9.8f, 0));
+	pSystem->addGravity(PxVec3(0, -9.8f, 0));
 	//pSystem->addWind(PxVec3(30, 0, 0), 0.5f); // viento hacia la derecha
 	//pSystem->addTornado(PxVec3(0, 0, 0), 20, 50, -1.0f); // tornado con centro , intensidad, radio y duracion infinita (-1)
 
 
 	/// ==== PRACTICA 4 ====
 
-	//pSystem->generateSpringDemo();
+	//pSystem->generateParticleSpringDemo();
 
-	//Particle* p = new Particle(PxVec3(0, 10, 0), PxVec3(0, 0, 0), 1, PxVec4(1, 1, 0, 1));
-	//pSystem->addParticle(p);
-	//pSystem->addBuoyancy(10, 10, 1000);
+	Particle* p = new Particle(PxVec3(0, 10, 0), PxVec3(0, 0, 0), 1, PxVec4(1, 1, 0, 1), PxSphereGeometry(1));
+	pSystem->addParticle(p);
+	pSystem->addBuoyancy(10, 10, 1000);
 
 	
 	/// ==== PRACTICA 5 ====
@@ -150,7 +150,7 @@ void initPhysics(bool interactive)
 
 	//// Pintar suelo
 	//RenderItem* item;
-	//item = new RenderItem(shape, Suelo, { 0.8, 0.8, 0.8, 1 });
+	//item = new RenderItem(shape, Suelo, { 0, 0, 1, 1 });
 
 	// ---- Solido rigido dinamico ----
 	//RigidBody* rb = new RigidBody(
@@ -193,13 +193,14 @@ void initPhysics(bool interactive)
 
 
 	/// ==== PROYECTO ====
-	game = new Game(gPhysics, gScene);
 
-	Level1* level1 = new Level1(gPhysics, gScene);
+	//game = new Game(gPhysics, gScene);
 
-	game->addScene(level1);
+	//Level1* level1 = new Level1(gPhysics, gScene);
 
-	game->setActiveScene(0);
+	//game->addScene(level1);
+
+	//game->setActiveScene(0);
 
 }
 
@@ -212,7 +213,7 @@ void stepPhysics(bool interactive, double t) // es como el update
 
 	PX_UNUSED(interactive);
 
-	game->update(t);
+	if(game) game->update(t);
 
 	//for (int i = 0; i < proyectiles.size(); i++) {
 
@@ -235,7 +236,7 @@ void cleanupPhysics(bool interactive)
 		delete p;
 	}
 
-	delete game;
+	if(game) delete game;
 
 	// Rigid Body ++++++++++++++++++++++++++++++++++++++++++
 	gScene->release();
@@ -266,7 +267,7 @@ void InstanciaParticula() {
 // Function called when a key is pressed
 void keyPress(unsigned char key, const PxTransform& camera) //input 
 {
-	game->keyPressed(key, camera);
+	if(game) game->keyPressed(key, camera);
 
 	PX_UNUSED(camera);
 

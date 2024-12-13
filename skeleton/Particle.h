@@ -16,7 +16,7 @@ public:
 	};
 
 	Particle();
-	Particle(PxVec3 pos, PxVec3 velo, double m, PxVec4 col);
+	Particle(PxVec3 pos, PxVec3 velo, double m, PxVec4 col, PxGeometry& g);
 	Particle(Particle const& p); // Para el sistema de particulas
 	~Particle();
 

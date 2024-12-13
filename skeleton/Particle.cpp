@@ -20,12 +20,12 @@ Particle::Particle()
 	damping = 0.995;
 }
 
-Particle::Particle(PxVec3 pos, PxVec3 velo, double m, PxVec4 col)
+Particle::Particle(PxVec3 pos, PxVec3 velo, double m, PxVec4 col, PxGeometry& g)
 	: transform(PxTransform(pos)), vel(velo), mass(m), color(col)
 {
 	accel = PxVec3(0, 0, 0);
 
-	PxShape* shape = CreateShape(PxSphereGeometry(1));
+	PxShape* shape = CreateShape(g);
 	renderItem = new RenderItem(shape, &transform, color);
 
 	center = PxVec3(0, 0, 0);

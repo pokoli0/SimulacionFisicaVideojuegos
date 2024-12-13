@@ -7,7 +7,7 @@ class BuoyantForce : public ForceGenerator
 {
 public:
 	BuoyantForce(float h, float V, float d);
-	~BuoyantForce() {};
+	~BuoyantForce();
 
 	// f = m*a
 	PxVec3 calculateForce(Particle* p) override;
@@ -21,6 +21,7 @@ protected:
 	float _volume;
 	float _liquid_density;
 	float _gravity = 9.8;
+	float _depth;
 
 	Particle* _liquid_particle; // For representation
 };
