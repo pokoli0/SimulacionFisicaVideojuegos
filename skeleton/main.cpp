@@ -16,7 +16,7 @@
 
 
 #include "Game.h"
-#include "Level1.h"
+#include "Kitchen.h"
 
 #include <iostream>
 
@@ -196,9 +196,10 @@ void initPhysics(bool interactive)
 
 	game = new Game(gPhysics, gScene);
 
-	Level1* level1 = new Level1(gPhysics, gScene);
+	Kitchen* kitchen = new Kitchen(gPhysics, gScene);
+	kitchen->setDefaultMaterial(gMaterial);
 
-	game->addScene(level1);
+	game->addScene(kitchen);
 
 	game->setActiveScene(0);
 

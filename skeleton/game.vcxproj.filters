@@ -27,6 +27,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Level1.cpp" />
+    <ClCompile Include="Kitchen.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core.hpp" />
@@ -56,6 +57,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Level1.h" />
+    <ClInclude Include="Kitchen.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Render">
