@@ -3,7 +3,12 @@
 Kitchen::Kitchen(PxPhysics* physics, PxScene* scene)
     : Scene(physics, scene)
 {
+    pSystem = new ParticleSystem();
 
+    oilLevel = 0;
+
+
+    pSystem->addGravity(PxVec3(0,-9.8f,0));
 }
 
 Kitchen::~Kitchen()
@@ -38,6 +43,21 @@ void Kitchen::initScene()
 
     // Camara
     setupCamera();
+}
+
+void Kitchen::keyPressed(unsigned char key, const PxTransform& camera)
+{
+    PX_UNUSED(camera);
+
+    switch (toupper(key))
+    {
+    case 'O':
+        addOil();
+        break;
+
+    default:
+        break;
+    }
 }
 
 void Kitchen::createPan()
@@ -94,4 +114,27 @@ void Kitchen::setupCamera()
 
     Snippets::Camera* camera = GetCamera();
     *camera = Snippets::Camera(eye, dir);
+}
+
+void Kitchen::addOil() {
+    //if (oilLevel >= 3) return; // No llenar más si ya está completo
+
+    cout << "olio" << endl;
+    // Dimensiones ajustadas a la sartén
+    float oilHeight = (1.0f / 3.0f) * (oilLevel + 1); // Cada nivel llena un tercio de la base
+    float panWidth = 20.0f; // Ancho total de la sartén
+    float panDepth = 20.0f; // Profundidad total de la sartén
+
+    // Crear la partícula que representa el aceite
+    PxVec3 position(0, -4.0f + oilHeight / 2.0f, 0); // Ajustar al nivel correspondiente
+    PxVec4 color(1.0f, 0.9f, 0.0f, 1.0f);            // Amarillo aceitoso
+    PxBoxGeometry oilGeometry(panWidth / 2, oilHeight / 2, panDepth / 2);
+
+    Particle* oil = new Particle(position, PxVec3(0, 0, 0), 1.0, color, oilGeometry, true);
+
+    if (pSystem) {
+        pSystem->addParticle(oil);
+    }
+
+    oilLevel++;
 }

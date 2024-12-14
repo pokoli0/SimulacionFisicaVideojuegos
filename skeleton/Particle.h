@@ -16,7 +16,7 @@ public:
 	};
 
 	Particle();
-	Particle(PxVec3 pos, PxVec3 velo, double m, PxVec4 col, PxGeometry& g);
+	Particle(PxVec3 pos, PxVec3 velo, double m, PxVec4 col, PxGeometry& g, bool v);
 	Particle(Particle const& p); // Para el sistema de particulas
 	~Particle();
 
@@ -51,6 +51,8 @@ public:
 	void setColor(PxVec4 c) { color = c; }
 	PxVec4 getColor() { return color; }
 
+	void setVisible(bool v) { visible = v; }
+
 protected:
 	list<Particle*>::iterator iterator;
 
@@ -70,4 +72,6 @@ protected:
 
 	PxVec3 center;
 	float ratio;
+
+	bool visible;
 };

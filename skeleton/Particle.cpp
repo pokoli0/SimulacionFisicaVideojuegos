@@ -9,9 +9,12 @@ Particle::Particle()
 	accel = PxVec3(0, 0, 0);
 	transform = PxTransform(PxVec3(0, 0, 0));
 	color = PxVec4(1, 0.5, 1, 1);
+	visible = true;
 
-	PxShape* shape = CreateShape(PxSphereGeometry(1));
-	renderItem = new RenderItem(shape, &transform, color);
+	if (visible) {
+		PxShape* shape = CreateShape(PxSphereGeometry(1));
+		renderItem = new RenderItem(shape, &transform, color);
+	}
 
 	mass = 1;
 	center = PxVec3(0, 0, 0);
@@ -20,13 +23,16 @@ Particle::Particle()
 	damping = 0.995;
 }
 
-Particle::Particle(PxVec3 pos, PxVec3 velo, double m, PxVec4 col, PxGeometry& g)
-	: transform(PxTransform(pos)), vel(velo), mass(m), color(col)
+Particle::Particle(PxVec3 pos, PxVec3 velo, double m, PxVec4 col, PxGeometry& g, bool v)
+	: transform(PxTransform(pos)), vel(velo), mass(m), color(col), visible(v)
 {
 	accel = PxVec3(0, 0, 0);
 
-	PxShape* shape = CreateShape(g);
-	renderItem = new RenderItem(shape, &transform, color);
+	if (visible) {
+		PxShape* shape = CreateShape(g);
+		renderItem = new RenderItem(shape, &transform, color);
+	}
+
 
 	center = PxVec3(0, 0, 0);
 	ratio = 50;
@@ -42,9 +48,13 @@ Particle::Particle(Particle const& p)
 	transform = PxTransform(p.transform.p);
 	color = p.color;
 
-	PxShape* shape = CreateShape(PxSphereGeometry(1));
-	renderItem = new RenderItem(shape, &transform, color);
 
+	visible = p.visible;
+
+	if (visible) {
+		PxShape* shape = CreateShape(PxSphereGeometry(1));
+		renderItem = new RenderItem(shape, &transform, color);
+	}
 
 	mass = p.mass;
 	center = p.center;

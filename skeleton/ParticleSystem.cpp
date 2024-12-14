@@ -258,5 +258,18 @@ void ParticleSystem::generateRBSpringDemo(PxPhysics* physics, PxScene* sc)
     //AnchoredSpringFG* f3 = new AnchoredSpringFG(1, 10, { 10.0, 20.0, 0.0 });
     //fList.push_back(f3);
 }
+
+void ParticleSystem::generateFloatingPotatoes(PxPhysics* physics, PxScene* sc, int nPotatoes)
+{
+    RigidBody* part1 = new RigidBody(physics, sc);
+    part1->getBody()->setGlobalPose(PxTransform(PxVec3(10, 10, 0)));
+    RigidBody* part2 = new RigidBody(physics, sc);
+    part2->getBody()->setGlobalPose(PxTransform(PxVec3(-10, 10, 0)));
+    part2->getBody()->setMass(2);
+
+    addRigidBody(part1);
+    addRigidBody(part2);
+}
+
 #pragma endregion
 
