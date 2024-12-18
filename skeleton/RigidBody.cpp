@@ -22,7 +22,7 @@ RigidBody::RigidBody(PxPhysics* physics, PxScene* scene)
 
     scene->addActor(*body);
 
-    RenderItem* d = new RenderItem(sh, body, PxVec4(0.5, 0.5, 0, 1));
+    renderItem = new RenderItem(sh, body, PxVec4(0.5, 0.5, 0, 1));
 }
 
 RigidBody::RigidBody(PxPhysics* physics, PxScene* scene, const PxGeometry& geometry, PxTransform transform, float density, PxVec3 initialVelocity, PxVec4 color)
@@ -43,7 +43,7 @@ RigidBody::RigidBody(PxPhysics* physics, PxScene* scene, const PxGeometry& geome
     // Para que le afecten las fisicas de la escena e interactue con otros solidos
     scene->addActor(*body);
 
-    RenderItem* dynamic = new RenderItem(sh, body, color);
+    renderItem = new RenderItem(sh, body, color);
 }
 
 RigidBody::RigidBody(PxPhysics* physics, PxScene* scene, const PxGeometry& geometry, PxTransform transform, float mass, PxVec3 inertiaTensor, PxVec3 initialVelocity, PxVec4 color)
@@ -91,6 +91,6 @@ RigidBody::~RigidBody()
 void RigidBody::setColor(const PxVec4& newColor)
 {
     if (renderItem) {
-        renderItem->color = newColor; // Actualiza el color del RenderItem
+        renderItem->color = newColor;
     }
 }

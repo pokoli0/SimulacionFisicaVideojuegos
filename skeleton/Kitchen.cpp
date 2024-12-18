@@ -159,8 +159,8 @@ void Kitchen::addOil()
 
     // Dimensiones ajustadas a la sartén
     float oilHeight = (1.0f / 3.0f) * (oilLevel + 1); // Cada nivel llena un tercio de la base
-    float panWidth = 20.0f; // Ancho total de la sartén
-    float panDepth = 20.0f; // Profundidad total de la sartén
+    float panWidth = 19;
+    float panDepth = 20.0f;
 
     // Crear la partícula que representa el aceite
     PxVec3 position(0, -4.0f + oilHeight / 2.0f, 0); // Ajustar al nivel correspondiente
