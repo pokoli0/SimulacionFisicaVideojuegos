@@ -68,7 +68,7 @@ public:
 	void generateRBSpringDemo(PxPhysics* physics, PxScene* sc);
 
 	// juego
-	void generateFloatingPotatoes(PxPhysics* physics, PxScene* sc, int nPotatoes);
+	RigidBody* generateFloatingPotato(PxPhysics* physics, PxScene* sc);
 
 	// getters & setters
 	double getParticleLifeTime(Particle* p) { return p->getLifeTime(); }

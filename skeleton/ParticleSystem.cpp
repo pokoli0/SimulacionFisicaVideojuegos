@@ -1,4 +1,6 @@
 #include "ParticleSystem.h"
+#include <cstdlib> // Para rand y srand
+#include <ctime>   // Para inicializar la semilla de números aleatorios
 
 ParticleSystem::ParticleSystem()
 {
@@ -259,16 +261,29 @@ void ParticleSystem::generateRBSpringDemo(PxPhysics* physics, PxScene* sc)
     //fList.push_back(f3);
 }
 
-void ParticleSystem::generateFloatingPotatoes(PxPhysics* physics, PxScene* sc, int nPotatoes)
+RigidBody* ParticleSystem::generateFloatingPotato(PxPhysics* physics, PxScene* sc)
 {
-    RigidBody* part1 = new RigidBody(physics, sc);
-    part1->getBody()->setGlobalPose(PxTransform(PxVec3(10, 10, 0)));
-    RigidBody* part2 = new RigidBody(physics, sc);
-    part2->getBody()->setGlobalPose(PxTransform(PxVec3(-10, 10, 0)));
-    part2->getBody()->setMass(2);
+    // Dimensiones de la sartén (ajustadas según la geometría actual)
+    float panWidth = 20.0f;  // Ancho total de la sartén
+    float panDepth = 20.0f;  // Profundidad total de la sartén
+    float panHeight = 4.0f; // Altura base donde flotan las patatas
 
-    addRigidBody(part1);
-    addRigidBody(part2);
+    // Generar posición aleatoria dentro de la sartén
+    float x = (static_cast<float>(rand()) / RAND_MAX) * panWidth - (panWidth / 2); // Entre -panWidth/2 y panWidth/2
+    float z = (static_cast<float>(rand()) / RAND_MAX) * panDepth - (panDepth / 2); // Entre -panDepth/2 y panDepth/2
+
+    PxVec3 position(x, panHeight, z); // Posición de la patata
+    PxVec4 color(1, 1, 0, 1);         // Amarillo claro
+    PxBoxGeometry geometry(1.0f, 1.0f, 1.0f); // Tamaño de la patata
+
+    // Crear el cuerpo rígido para la patata
+    RigidBody* r = new RigidBody(physics, sc, geometry, PxTransform(position), 1500, PxVec3(0, 0, 0), color);
+    addRigidBody(r);
+
+    // Agregar fuerza de flotación
+    addBuoyancy(10, 10, 1000);
+
+    return r;
 }
 
 #pragma endregion

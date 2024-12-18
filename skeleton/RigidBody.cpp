@@ -3,6 +3,26 @@
 
 RigidBody::RigidBody(PxPhysics* physics, PxScene* scene)
 {
+    body = physics->createRigidDynamic(PxTransform(0,0,0));
+    
+    body->setLinearVelocity(PxVec3(0,0,0));
+    body->setAngularVelocity(PxVec3(0, 0, 0));
+
+    //// Dimensiones del cuboide
+    float a = 5.0f; // Largo
+    float b = 1.0f; // Ancho
+    float c = 1.0f; // Altura
+
+    // Asociar forma
+    PxShape* sh = CreateShape(PxBoxGeometry(a,b,c)); // Cubo por defecto
+    body->attachShape(*sh);
+
+    // Masa y tensor de inercia
+    PxRigidBodyExt::updateMassAndInertia(*body, 0.15f);
+
+    scene->addActor(*body);
+
+    RenderItem* d = new RenderItem(sh, body, PxVec4(0.5, 0.5, 0, 1));
 }
 
 RigidBody::RigidBody(PxPhysics* physics, PxScene* scene, const PxGeometry& geometry, PxTransform transform, float density, PxVec3 initialVelocity, PxVec4 color)
@@ -66,4 +86,11 @@ RigidBody::~RigidBody()
 {
     if (renderItem) delete renderItem;
     if (body) body->release();
+}
+
+void RigidBody::setColor(const PxVec4& newColor)
+{
+    if (renderItem) {
+        renderItem->color = newColor; // Actualiza el color del RenderItem
+    }
 }

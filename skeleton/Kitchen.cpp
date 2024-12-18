@@ -1,14 +1,24 @@
 #include "Kitchen.h"
 
+#include <algorithm>
+
+
 Kitchen::Kitchen(PxPhysics* physics, PxScene* scene)
     : Scene(physics, scene)
 {
     pSystem = new ParticleSystem();
+    buoySystem = new ParticleSystem();
+
+    systems.push_back(pSystem);
+    systems.push_back(buoySystem);
+
 
     oilLevel = 0;
 
 
-    pSystem->addGravity(PxVec3(0,-9.8f,0));
+    //pSystem->addGravity(PxVec3(0,-9.8f,0));
+    buoySystem->addGravity(PxVec3(0,-9.8f,0));
+
 }
 
 Kitchen::~Kitchen()
@@ -24,6 +34,53 @@ void Kitchen::initScene()
         throw std::runtime_error("Default material no inicializado.");
     }
 
+    // Vitro
+    //createKitchen();
+
+    // Sarten
+    createPan();
+
+    // Camara
+    setupCamera();
+}
+
+void Kitchen::update(double t)
+{
+    for (auto s : systems) {
+        s->update(t);
+    }
+
+    for (auto p : potatoesB) {
+        if (p->isCooking) {
+            p->cookingTime += t;
+            PxVec4 newColor = calculateColor(p->cookingTime);
+            p->setColor(newColor);
+        }
+    }
+}
+
+void Kitchen::keyPressed(unsigned char key, const PxTransform& camera)
+{
+    PX_UNUSED(camera);
+
+    switch (toupper(key))
+    {
+    case 'O':
+        addOil();
+        break;
+
+    case 'P':
+        addPotatoes();
+        break;
+
+    default:
+        break;
+    }
+}
+
+void Kitchen::createKitchen()
+{
+
     // Crear el plano para la encimera (marrón)
     PxRigidStatic* countertop = physics->createRigidStatic(PxTransform({ 0, -5, 0 }));
     PxShape* countertopShape = physics->createShape(PxBoxGeometry(50, 0.5, 50), *defaultMaterial);
@@ -38,26 +95,6 @@ void Kitchen::initScene()
     scene->addActor(*stovetop);
     renderItems.push_back(new RenderItem(stovetopShape, stovetop, PxVec4(0.1, 0.1, 0.1, 1.0f)));
 
-    // Sarten
-    createPan();
-
-    // Camara
-    setupCamera();
-}
-
-void Kitchen::keyPressed(unsigned char key, const PxTransform& camera)
-{
-    PX_UNUSED(camera);
-
-    switch (toupper(key))
-    {
-    case 'O':
-        addOil();
-        break;
-
-    default:
-        break;
-    }
 }
 
 void Kitchen::createPan()
@@ -116,10 +153,10 @@ void Kitchen::setupCamera()
     *camera = Snippets::Camera(eye, dir);
 }
 
-void Kitchen::addOil() {
-    //if (oilLevel >= 3) return; // No llenar más si ya está completo
+void Kitchen::addOil() 
+{
+    if (oilLevel >= 12) return; // No llenar más si ya está completo
 
-    cout << "olio" << endl;
     // Dimensiones ajustadas a la sartén
     float oilHeight = (1.0f / 3.0f) * (oilLevel + 1); // Cada nivel llena un tercio de la base
     float panWidth = 20.0f; // Ancho total de la sartén
@@ -137,4 +174,36 @@ void Kitchen::addOil() {
     }
 
     oilLevel++;
+}
+
+void Kitchen::addPotatoes()
+{
+    if (potatoes >= maxPotatoes) return;
+
+    RigidBody* r = buoySystem->generateFloatingPotato(physics, scene);
+    potatoesB.push_back(r);
+
+    r->isCooking = true;
+
+    potatoes++;
+}
+
+PxVec4 Kitchen::calculateColor(float elapsedTime)
+{
+    // Rango de tiempo (por ejemplo, de 0 a 10 segundos)
+    const float maxTime = 10.0f;
+
+    // Colores inicial y final
+    PxVec4 startColor(1.0f, 1.0f, 0.0f, 1.0f);  // Amarillo claro
+    PxVec4 endColor(0.5f, 0.3f, 0.0f, 1.0f);    // Marrón
+
+    // Interpolación lineal
+    float alpha = (elapsedTime / maxTime < 1.0f) ? elapsedTime / maxTime : 1.0f;
+
+    return PxVec4(
+        startColor.x * (1 - alpha) + endColor.x * alpha,
+        startColor.y * (1 - alpha) + endColor.y * alpha,
+        startColor.z * (1 - alpha) + endColor.z * alpha,
+        1.0f
+    );
 }

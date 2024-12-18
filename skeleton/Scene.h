@@ -13,6 +13,7 @@ public:
     virtual void keyPressed(unsigned char key, const PxTransform& camera);
 
 
+
 protected:
     std::vector<RigidBody*> rigidBodies; // Sólidos rígidos en la escena
     std::vector<ForceGenerator*> forces; // Fuerzas aplicadas

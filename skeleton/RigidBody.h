@@ -28,8 +28,14 @@ public:
     // Métodos para acceder al cuerpo dinámico
     PxRigidDynamic* getBody() const { return body; }
 
+    void setColor(const PxVec4& newColor);
+
     std::list<RigidBody*>::iterator getIterator() const { return iterator; }
     void setIterator(list<RigidBody*>::iterator i) { iterator = i; }
+
+
+    float cookingTime = 0.0f; // Tiempo acumulado para la cocción
+    bool isCooking = false;   // Si está en el proceso de cocción
 
 private:
     PxRigidDynamic* body = nullptr; // Actor dinámico de PhysX
@@ -37,6 +43,9 @@ private:
     RenderItem* renderItem = nullptr; // Renderización asociada
 
     list<RigidBody*>::iterator iterator;
+
+
+
 
 };
 

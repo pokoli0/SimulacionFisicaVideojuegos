@@ -98,7 +98,7 @@ void initPhysics(bool interactive)
 	
 	/// ==== PRACTICA 2 ====
 
-	pSystem = new ParticleSystem();
+	//pSystem = new ParticleSystem();
 	
 	//pSystem->addGenerator(UNIFORME,
 	//	PxVec3(0, 0, 0),  // Centro del generador
@@ -126,7 +126,7 @@ void initPhysics(bool interactive)
 
 	/// ==== PRACTICA 3 ====
 
-	pSystem->addGravity(PxVec3(0, -9.8f, 0));
+	//pSystem->addGravity(PxVec3(0, -9.8f, 0));
 	//pSystem->addWind(PxVec3(30, 0, 0), 0.5f); // viento hacia la derecha
 	//pSystem->addTornado(PxVec3(0, 0, 0), 20, 50, -1.0f); // tornado con centro , intensidad, radio y duracion infinita (-1)
 
@@ -152,7 +152,7 @@ void initPhysics(bool interactive)
 	//RenderItem* item;
 	//item = new RenderItem(shape, Suelo, { 0, 0, 1, 1 });
 
-	// ---- Solido rigido dinamico ----
+	// ---- Solido rigido dinamico ---- (SIN TENSOR DE INERCIA)
 	//RigidBody* rb = new RigidBody(
 	//	gPhysics,
 	//	gScene,
@@ -210,7 +210,7 @@ void initPhysics(bool interactive)
 // t: time passed since last call in milliseconds
 void stepPhysics(bool interactive, double t) // es como el update
 {
-	pSystem->update(t);
+	if(pSystem) pSystem->update(t);
 
 	PX_UNUSED(interactive);
 
@@ -231,7 +231,7 @@ void cleanupPhysics(bool interactive)
 {
 	PX_UNUSED(interactive);
 
-	delete pSystem;	
+	if(pSystem) delete pSystem;	
 
 	for (auto p : proyectiles) {
 		delete p;
@@ -292,7 +292,7 @@ void keyPress(unsigned char key, const PxTransform& camera) //input
 		break;
 	
 	case 'O':
-		pSystem->addGravity(PxVec3(0, 9.8, 0)); // Hacia arriba
+		if(pSystem) pSystem->addGravity(PxVec3(0, 9.8, 0)); // Hacia arriba
 		break;
 
 	default:

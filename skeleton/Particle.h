@@ -73,5 +73,5 @@ protected:
 	PxVec3 center;
 	float ratio;
 
-	bool visible;
+	bool visible = true;
 };

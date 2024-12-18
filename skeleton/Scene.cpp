@@ -16,7 +16,8 @@ void Scene::initScene()
 {
 }
 
-void Scene::update(double t) {
+void Scene::update(double t) 
+{
     for (RigidBody* rb : rigidBodies) {
         if (rb && rb->getBody()) {
             rb->getBody()->clearForce(PxForceMode::eFORCE);
