@@ -119,7 +119,18 @@ void Kitchen::keyPressed(unsigned char key, const PxTransform& camera)
     }
 }
 
-void Kitchen::clearScene() {
+void Kitchen::clearScene() 
+{
+    for (RigidBody* rb : rigidBodies) {
+        if (rb && rb->getBody()) {
+            scene->removeActor(*rb->getBody());
+            delete rb;
+        }
+    }
+
+    rigidBodies.clear();
+    salt = 0;
+
     // Limpiar generadores de partículas
     if (extinguisherGenerator) {
         delete extinguisherGenerator;
@@ -142,6 +153,14 @@ void Kitchen::clearScene() {
         }
     }
     rigidStatics.clear();
+
+    // Limpiar elementos de renderizado
+    for (RenderItem* item : renderItems) {
+        DeregisterRenderItem(item);
+        delete item;
+    }
+    renderItems.clear();
+
 
     // Llamar a la limpieza base
     Scene::clearScene();
@@ -259,6 +278,7 @@ void Kitchen::addPotatoes()
     RigidBody* r = buoySystem->generateFloatingPotato(physics, scene);
     r->setRatio(50);
 
+    allPotatoes.push_back(r);
     potatoesB.push_back(r);
     
     r->isCooking = true;
@@ -422,7 +442,7 @@ void Kitchen::endCooking()
     Scene* scene = game->getScene(1);
 
     if (Result* result = static_cast<Result*>(scene)) {
-        result->setPotatoes(potatoesB);
+        result->setPotatoes(allPotatoes);
         potatoesB.clear();
         potatoes = 0;
         game->setActiveScene(1);

@@ -59,6 +59,7 @@ private:
     std::vector<ParticleSystem*> systems;
 
     std::vector<RigidBody*> potatoesB;
+    std::vector<RigidBody*> allPotatoes;
 
     bool oiled = false;
     int oilLevel = 0; // Control del nivel de aceite (0, 1, 2)

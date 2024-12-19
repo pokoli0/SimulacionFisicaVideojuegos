@@ -2,6 +2,7 @@
 
 #include "Scene.h"
 #include "RigidBody.h"
+#include "ParticleGenerator.h"
 
 #include "Game.h"
 
@@ -24,4 +25,6 @@ private:
     std::vector<RigidBody*> potatoes;
 
     ParticleSystem* pSystem = nullptr;
+
+    std::vector<ParticleGenerator*> finalGenerator;
 };

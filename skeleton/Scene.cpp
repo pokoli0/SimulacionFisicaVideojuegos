@@ -29,9 +29,6 @@ void Scene::update(double t)
                 }
             }
         }
-        else {
-            std::cerr << "RigidBody o su cuerpo fisico es nulo" << std::endl;
-        }
     }
 }
 
@@ -41,23 +38,6 @@ void Scene::keyPressed(unsigned char key, const PxTransform& camera)
 
 void Scene::clearScene()
 {
-    // Limpiar cuerpos rígidos dinámicos
-    for (RigidBody* rb : rigidBodies) {
-        if (rb) {
-            scene->removeActor(*rb->getBody());
-            delete rb;
-        }
-    }
-    rigidBodies.clear();
-
-    // Limpiar cuerpos rígidos estáticos
-    for (PxRigidStatic* rs : rigidStatics) {
-        if (rs) {
-            scene->removeActor(*rs);
-            rs->release();
-        }
-    }
-    rigidStatics.clear();
 
     // Limpiar fuerzas
     for (ForceGenerator* force : forces) {
@@ -65,10 +45,5 @@ void Scene::clearScene()
     }
     forces.clear();
 
-    // Limpiar elementos de renderizado
-    for (RenderItem* item : renderItems) {
-        DeregisterRenderItem(item);
-        delete item;
-    }
-    renderItems.clear();
+
 }

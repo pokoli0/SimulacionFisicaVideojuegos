@@ -23,7 +23,7 @@
 
 Game* game = nullptr;
 
-std::string display_text = "Paula Sierra Luque";
+std::string display_text = "Potato Chip Simulator";
 
 
 using namespace physx;
