@@ -35,8 +35,19 @@ Particle* UniformGenerator::emit()
 
     Particle* p = new Particle();  // Crea la nueva partícula
 
+    // Generar un color aleatorio (amarillo, naranja, rojo) - PARA EL FUEGO DEL JUEGO 
+    PxVec4 color;
+    const int randomColor = rand() % 3; // 0, 1 o 2
+
+    switch (randomColor) {
+    case 0: color = PxVec4(1.0f, 1.0f, 0.0f, 1.0f); break; // Amarillo
+    case 1: color = PxVec4(1.0f, 0.5f, 0.0f, 1.0f); break; // Naranja
+    case 2: color = PxVec4(1.0f, 0.0f, 0.0f, 1.0f); break; // Rojo
+    }
+
     p->setVelocity(randomVelocity);  // Asigna la velocidad calculada
     p->setPosition(calculatePosition());  // Calcula y asigna la posición
+    p->setColor(color);
 
     particles.push_back(p);
 

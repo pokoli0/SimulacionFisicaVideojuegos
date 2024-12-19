@@ -200,9 +200,7 @@ void initPhysics(bool interactive)
 	kitchen->setDefaultMaterial(gMaterial);
 
 	game->addScene(kitchen);
-
 	game->setActiveScene(0);
-
 }
 
 // Function to configure what happens in each step of physics

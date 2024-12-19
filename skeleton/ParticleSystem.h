@@ -49,9 +49,11 @@ public:
 
 	void addRigidBody(RigidBody* rigid);
 	void destroyRigidBody(RigidBody* rigid);
+	void removeRigidBody(RigidBody* r); // para que no se le apliquen las fuerzas
+
 
 	void addGenerator(GeneratorType type, PxVec3 pos, PxVec3 direction, float rate, PxVec3 desv, 
-		float range, float spawnR, GenDistribution sp, float rat, float lifetime = 10.0f);
+		float range, float spawnR, GenDistribution sp, float rat, float pRatio, float lifetime = 10.0f);
 
 	void addGravity(PxVec3 g);
 	void addWind(PxVec3 windVelocity, float k1, float k2 = 0.0f, float duration = -1.0f);

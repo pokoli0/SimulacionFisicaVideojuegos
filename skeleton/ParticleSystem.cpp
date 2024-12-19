@@ -141,10 +141,18 @@ void ParticleSystem::destroyRigidBody(RigidBody* rigid) {
     }
 }
 
+void ParticleSystem::removeRigidBody(RigidBody* r)
+{
+    auto it = std::find(rList.begin(), rList.end(), r);
+    if (it != rList.end()) {
+        rList.erase(it);
+    }
+}
+
 
 #pragma region Generador
 void ParticleSystem::addGenerator(GeneratorType type, PxVec3 pos, PxVec3 direction, float rate, PxVec3 desv, 
-    float range, float spawnR, GenDistribution sp, float rat, float lifetime)
+    float range, float spawnR, GenDistribution sp, float rat, float lifetime, float pRatio)
 {
     Particle p = Particle();
     p.setPosition(pos);
@@ -158,7 +166,7 @@ void ParticleSystem::addGenerator(GeneratorType type, PxVec3 pos, PxVec3 directi
         gList.push_back(new UniformGenerator(&p, rate, range, spawnR, sp));
     }
     else { // Generador normal
-        gList.push_back(new NormalGenerator(&p, rate, desv, spawnR, sp));
+        gList.push_back(new NormalGenerator(&p, rate, desv, spawnR, sp, pRatio));
     }
 }
 #pragma endregion
@@ -263,18 +271,19 @@ void ParticleSystem::generateRBSpringDemo(PxPhysics* physics, PxScene* sc)
 
 RigidBody* ParticleSystem::generateFloatingPotato(PxPhysics* physics, PxScene* sc)
 {
-    // Dimensiones de la sartén (ajustadas según la geometría actual)
-    float panWidth = 20.0f;  // Ancho total de la sartén
-    float panDepth = 20.0f;  // Profundidad total de la sartén
-    float panHeight = 4.0f; // Altura base donde flotan las patatas
+    // Dimensiones de la sartén
+    const float panWidth = 20.0f;  // Ancho total de la sartén
+    const float panDepth = 20.0f;  // Profundidad total de la sartén
+    const float panHeight = 4.0f; // Altura base donde flotan las patatas
 
     // Generar posición aleatoria dentro de la sartén
-    float x = (static_cast<float>(rand()) / RAND_MAX) * panWidth - (panWidth / 2); // Entre -panWidth/2 y panWidth/2
-    float z = (static_cast<float>(rand()) / RAND_MAX) * panDepth - (panDepth / 2); // Entre -panDepth/2 y panDepth/2
+    const float x = (static_cast<float>(rand()) / RAND_MAX) * panWidth - (panWidth / 2); // Entre -panWidth/2 y panWidth/2
+    const float z = (static_cast<float>(rand()) / RAND_MAX) * panDepth - (panDepth / 2); // Entre -panDepth/2 y panDepth/2
 
-    PxVec3 position(x, panHeight, z); // Posición de la patata
-    PxVec4 color(1, 1, 0, 1);         // Amarillo claro
-    PxBoxGeometry geometry(1.0f, 1.0f, 1.0f); // Tamaño de la patata
+    const PxVec3 position(x, panHeight, z); // Posición de la patata
+    const PxVec4 color(1, 1, 0, 1);         // Amarillo claro
+
+    const PxBoxGeometry geometry(3.0f, 1.0f, 1.0f); // Tamaño de la patata
 
     // Crear el cuerpo rígido para la patata
     RigidBody* r = new RigidBody(physics, sc, geometry, PxTransform(position), 1500, PxVec3(0, 0, 0), color);

@@ -24,12 +24,20 @@ public:
 
     PxVec4 calculateColor(float elapsedTime);
 
+    // Comprobacion de si la patata esta en el area de la sarten
+    void checkPanLimits();
+
+    // EVENTOS
+    void generateFire(const PxVec3& position);
 
     // Setters
     void setDefaultMaterial(PxMaterial* material) { defaultMaterial = material; }
 
 private:
+    // Encargado de la gravedad
     ParticleSystem* pSystem = nullptr; 
+
+    // Encargado de la flotacion
     ParticleSystem* buoySystem = nullptr;
 
     std::vector<ParticleSystem*> systems;

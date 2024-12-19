@@ -16,8 +16,7 @@ Kitchen::Kitchen(PxPhysics* physics, PxScene* scene)
     oilLevel = 0;
 
 
-    //pSystem->addGravity(PxVec3(0,-9.8f,0));
-    buoySystem->addGravity(PxVec3(0,-9.8f,0));
+    pSystem->addGravity(PxVec3(0,-9.8f,0));
 
 }
 
@@ -35,7 +34,7 @@ void Kitchen::initScene()
     }
 
     // Vitro
-    //createKitchen();
+    createKitchen();
 
     // Sarten
     createPan();
@@ -57,6 +56,30 @@ void Kitchen::update(double t)
             p->setColor(newColor);
         }
     }
+
+    for (auto it = potatoesB.begin(); it != potatoesB.end(); ) {
+        RigidBody* potato = *it;
+
+        // Actualizar tiempo de cocción
+        if (potato->isCooking) {
+            potato->cookingTime += t;
+
+            // Cambiar color según el tiempo
+            if (potato->cookingTime > 20) {
+                potato->setColor(PxVec4(0.0f, 0.0f, 0.0f, 1.0f)); // Negro
+            }
+
+            // Si pasa demasiado tiempo, generar fuego
+            if (potato->cookingTime > 30 && !potato->isOnFire) {
+                potato->isOnFire = true;
+                generateFire(potato->getBody()->getGlobalPose().p);
+            }
+        }
+
+        ++it;
+    }
+
+    checkPanLimits();
 }
 
 void Kitchen::keyPressed(unsigned char key, const PxTransform& camera)
@@ -80,7 +103,6 @@ void Kitchen::keyPressed(unsigned char key, const PxTransform& camera)
 
 void Kitchen::createKitchen()
 {
-
     // Crear el plano para la encimera (marrón)
     PxRigidStatic* countertop = physics->createRigidStatic(PxTransform({ 0, -5, 0 }));
     PxShape* countertopShape = physics->createShape(PxBoxGeometry(50, 0.5, 50), *defaultMaterial);
@@ -155,10 +177,10 @@ void Kitchen::setupCamera()
 
 void Kitchen::addOil() 
 {
-    if (oilLevel >= 12) return; // No llenar más si ya está completo
+    if (oilLevel >= 12) return; // limite
 
     // Dimensiones ajustadas a la sartén
-    float oilHeight = (1.0f / 3.0f) * (oilLevel + 1); // Cada nivel llena un tercio de la base
+    float oilHeight = (1.0f / 3.0f) * (oilLevel + 1);
     float panWidth = 19;
     float panDepth = 20.0f;
 
@@ -169,10 +191,6 @@ void Kitchen::addOil()
 
     Particle* oil = new Particle(position, PxVec3(0, 0, 0), 1.0, color, oilGeometry, true);
 
-    if (pSystem) {
-        pSystem->addParticle(oil);
-    }
-
     oilLevel++;
 }
 
@@ -181,6 +199,9 @@ void Kitchen::addPotatoes()
     if (potatoes >= maxPotatoes) return;
 
     RigidBody* r = buoySystem->generateFloatingPotato(physics, scene);
+    
+    if (pSystem) pSystem->addRigidBody(r); // para que tengan gravedad
+
     potatoesB.push_back(r);
 
     r->isCooking = true;
@@ -206,4 +227,47 @@ PxVec4 Kitchen::calculateColor(float elapsedTime)
         startColor.z * (1 - alpha) + endColor.z * alpha,
         1.0f
     );
+}
+
+void Kitchen::checkPanLimits()
+{
+    const float panWidth = 20.0f;
+    const float panDepth = 20.0f;
+
+    for (auto it = potatoesB.begin(); it != potatoesB.end(); ) {
+        RigidBody* potato = *it;
+        PxVec3 position = potato->getBody()->getGlobalPose().p;
+
+        // Si la patata está fuera de los límites de la sartén
+        if (std::abs(position.x) > panWidth / 2 || std::abs(position.z) > panDepth / 2) {
+            // Eliminar del sistema de flotación
+            buoySystem->removeRigidBody(potato);
+
+            // Detener el cambio de color (desactivar cocción)
+            potato->isCooking = false;
+
+            // Eliminar la patata de la lista
+            it = potatoesB.erase(it);
+        }
+        else {
+            ++it;
+        }
+    }
+}
+
+void Kitchen::generateFire(const PxVec3& position) 
+{
+    buoySystem->addGenerator(NORMAL,
+        position,                 // Posición del generador
+        PxVec3(0, 5, 0),         // Dirección hacia arriba
+        50,                       // Tasa de generación
+        PxVec3(1,1,1),          // Desviación de velocidad
+        10,                       // Rango
+        5,                        // Rango de spawn
+        GenDistribution::NORMALDIST, // Distribución normal
+        50,                       // Ratio de partículas
+        5,                         // Vida útil de las partículas
+        30                          // radio vivo
+    );
+
 }

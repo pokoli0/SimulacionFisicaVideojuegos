@@ -48,8 +48,11 @@ public:
 	double getMass() { return mass; }
 	void setMass(double m) { mass = m; }
 
-	void setColor(PxVec4 c) { color = c; }
-	PxVec4 getColor() { return color; }
+	void setColor(PxVec4 c) {
+		if (renderItem) {
+			renderItem->color = c;
+		}
+	}
 
 	void setVisible(bool v) { visible = v; }
 

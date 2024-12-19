@@ -34,8 +34,9 @@ public:
     void setIterator(list<RigidBody*>::iterator i) { iterator = i; }
 
 
-    float cookingTime = 0.0f; // Tiempo acumulado para la cocción
-    bool isCooking = false;   // Si está en el proceso de cocción
+    bool isCooking = false;
+    bool isOnFire = false;
+    float cookingTime = 0.0f;
 
 private:
     PxRigidDynamic* body = nullptr; // Actor dinámico de PhysX
