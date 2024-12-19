@@ -11,7 +11,7 @@ Particle::Particle()
 	color = PxVec4(1, 0.5, 1, 1);
 
 	if (visible) {
-		PxShape* shape = CreateShape(PxSphereGeometry(1));
+		PxShape* shape = CreateShape(PxSphereGeometry(2));
 		renderItem = new RenderItem(shape, &transform, color);
 	}
 

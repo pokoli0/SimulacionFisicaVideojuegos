@@ -1,7 +1,7 @@
 #include "UniformGenerator.h"
 
-UniformGenerator::UniformGenerator(Particle* p, float rate, float range, float spawnRange, GenDistribution dist)
-    : ParticleGenerator(p, rate, spawnRange, dist)
+UniformGenerator::UniformGenerator(Particle* p, float rate, float range, float spawnRange, GenDistribution dist, bool f)
+    : ParticleGenerator(p, rate, spawnRange, dist), fire(f)
 {
     cout << "Uniform generator created." << endl;
 
@@ -17,10 +17,6 @@ UniformGenerator::UniformGenerator(Particle* p, float rate, float range, float s
 
 UniformGenerator::~UniformGenerator()
 {
-    for (Particle* p : particles)
-    {
-        delete p; // Elimina cada partícula creada
-    }
     particles.clear();
 }
 
@@ -37,12 +33,32 @@ Particle* UniformGenerator::emit()
 
     // Generar un color aleatorio (amarillo, naranja, rojo) - PARA EL FUEGO DEL JUEGO 
     PxVec4 color;
-    const int randomColor = rand() % 3; // 0, 1 o 2
+    if (fire) {
+        const int randomColor = rand() % 3; // 0, 1 o 2
 
-    switch (randomColor) {
-    case 0: color = PxVec4(1.0f, 1.0f, 0.0f, 1.0f); break; // Amarillo
-    case 1: color = PxVec4(1.0f, 0.5f, 0.0f, 1.0f); break; // Naranja
-    case 2: color = PxVec4(1.0f, 0.0f, 0.0f, 1.0f); break; // Rojo
+        switch (randomColor) 
+        {
+            case 0: color = PxVec4(1.0f, 1.0f, 0.0f, 1.0f); break; // Amarillo
+            case 1: color = PxVec4(1.0f, 0.5f, 0.0f, 1.0f); break; // Naranja
+            case 2: color = PxVec4(1.0f, 0.0f, 0.0f, 1.0f); break; // Rojo
+        }
+    }
+    else {
+        const int randomColor = rand() % 2; // 0, 1
+        color = PxVec4(0.0f, 0.1f, 0.9f, 1.0f);
+
+        switch (randomColor)
+        {
+        case 0:
+            color = PxVec4(1.0f, 1.0f, 1.0f, 1.0f); // Blanco
+            break;
+        case 1:
+            color = PxVec4(0.8f, 0.9f, 1.0f, 1.0f); // Azul muy claro
+            break;
+        }
+        
+        p->setMass(2.0);
+
     }
 
     p->setVelocity(randomVelocity);  // Asigna la velocidad calculada

@@ -3,8 +3,8 @@
 #include <algorithm>
 
 
-Kitchen::Kitchen(PxPhysics* physics, PxScene* scene)
-    : Scene(physics, scene)
+Kitchen::Kitchen(Game* g, PxPhysics* physics, PxScene* scene)
+    : Scene(physics, scene), game(g)
 {
     pSystem = new ParticleSystem();
     buoySystem = new ParticleSystem();
@@ -19,6 +19,7 @@ Kitchen::Kitchen(PxPhysics* physics, PxScene* scene)
 
 
     pSystem->addGravity(PxVec3(0,-9.8f,0));
+    buoySystem->addGravity(PxVec3(0,-9.8f,0));
 
 }
 
@@ -67,19 +68,20 @@ void Kitchen::update(double t)
             potato->cookingTime += t;
 
             // Cambiar color según el tiempo
-            if (potato->cookingTime > 20) {
+            if (potato->cookingTime > 30) {
                 potato->setColor(PxVec4(0.0f, 0.0f, 0.0f, 1.0f)); // Negro
             }
 
             // Si pasa demasiado tiempo, generar fuego
-            if (potato->cookingTime > 30 && !potato->isOnFire) {
+            if (potato->cookingTime > 45 && !potato->isOnFire) {
                 potato->isOnFire = true;
                 generateFire(potato->getBody()->getGlobalPose().p);
             }
         }
-
         ++it;
     }
+
+    checkExtinguisherUsingTime(t);
 
     checkPanLimits();
 }
@@ -99,16 +101,50 @@ void Kitchen::keyPressed(unsigned char key, const PxTransform& camera)
         break;
 
     case 'E':
-        //pSystem.toggleWind();
+        fireSystem->toggleWind();
+        useExtinguisher();
         break;
 
     case 'L':
         addSalt();
         break;
 
+    case 'N':
+        endCooking();
+        break;
+
+
     default:
         break;
     }
+}
+
+void Kitchen::clearScene() {
+    // Limpiar generadores de partículas
+    if (extinguisherGenerator) {
+        delete extinguisherGenerator;
+        extinguisherGenerator = nullptr;
+    }
+    for (ParticleGenerator* fireGen : fireGenerators) {
+        delete fireGen;
+    }
+    fireGenerators.clear();
+
+    // Limpiar patatas
+    potatoesB.clear();
+    potatoes = 0;
+
+    // Limpiar objetos rígidos estáticos
+    for (PxRigidStatic* rs : rigidStatics) {
+        if (rs) {
+            scene->removeActor(*rs);
+            rs->release();
+        }
+    }
+    rigidStatics.clear();
+
+    // Llamar a la limpieza base
+    Scene::clearScene();
 }
 
 void Kitchen::createKitchen()
@@ -119,6 +155,7 @@ void Kitchen::createKitchen()
     countertop->attachShape(*countertopShape);
     scene->addActor(*countertop);
     renderItems.push_back(new RenderItem(countertopShape, countertop, PxVec4(0.3f, 0.4f, 0.9f, 1.0f)));
+    rigidStatics.push_back(countertop);
 
     // Crear el plano para la vitrocerámica (negro clarito)
     PxRigidStatic* stovetop = physics->createRigidStatic(PxTransform({ 0, -4.9, 0 }));
@@ -126,7 +163,7 @@ void Kitchen::createKitchen()
     stovetop->attachShape(*stovetopShape);
     scene->addActor(*stovetop);
     renderItems.push_back(new RenderItem(stovetopShape, stovetop, PxVec4(0.1, 0.1, 0.1, 1.0f)));
-
+    rigidStatics.push_back(stovetop);
 }
 
 void Kitchen::createPan()
@@ -137,6 +174,7 @@ void Kitchen::createPan()
     panBase->attachShape(*panBaseShape);
     scene->addActor(*panBase);
     renderItems.push_back(new RenderItem(panBaseShape, panBase, PxVec4(0.5f, 0.5f, 0.5f, 1.0f)));
+    rigidStatics.push_back(panBase);
 
     // Bordes de la sartén
     PxRigidStatic* panEdge1 = physics->createRigidStatic(PxTransform({ -10, -2.4, 0 }));
@@ -144,24 +182,28 @@ void Kitchen::createPan()
     panEdge1->attachShape(*panEdgeShape1);
     scene->addActor(*panEdge1);
     renderItems.push_back(new RenderItem(panEdgeShape1, panEdge1, PxVec4(0.5f, 0.5f, 0.5f, 1.0f)));
+    rigidStatics.push_back(panEdge1);
 
     PxRigidStatic* panEdge2 = physics->createRigidStatic(PxTransform({ 10, -2.4, 0 }));
     PxShape* panEdgeShape2 = physics->createShape(PxBoxGeometry(0.5, 3, 10), *defaultMaterial);
     panEdge2->attachShape(*panEdgeShape2);
     scene->addActor(*panEdge2);
     renderItems.push_back(new RenderItem(panEdgeShape2, panEdge2, PxVec4(0.5f, 0.5f, 0.5f, 1.0f)));
+    rigidStatics.push_back(panEdge2);
 
     PxRigidStatic* panEdge3 = physics->createRigidStatic(PxTransform({ 0, -2.4, -10 }));
     PxShape* panEdgeShape3 = physics->createShape(PxBoxGeometry(10, 3, 0.5), *defaultMaterial);
     panEdge3->attachShape(*panEdgeShape3);
     scene->addActor(*panEdge3);
     renderItems.push_back(new RenderItem(panEdgeShape3, panEdge3, PxVec4(0.5f, 0.5f, 0.5f, 1.0f)));
+    rigidStatics.push_back(panEdge3);
 
     PxRigidStatic* panEdge4 = physics->createRigidStatic(PxTransform({ 0, -2.4, 10 }));
     PxShape* panEdgeShape4 = physics->createShape(PxBoxGeometry(10, 3, 0.5), *defaultMaterial);
     panEdge4->attachShape(*panEdgeShape4);
     scene->addActor(*panEdge4);
     renderItems.push_back(new RenderItem(panEdgeShape4, panEdge4, PxVec4(0.5f, 0.5f, 0.5f, 1.0f)));
+    rigidStatics.push_back(panEdge4);
 
     // Mango de la sartén
     PxRigidStatic* panHandle = physics->createRigidStatic(PxTransform({ 0, -3, -15 }));
@@ -169,7 +211,7 @@ void Kitchen::createPan()
     panHandle->attachShape(*panHandleShape);
     scene->addActor(*panHandle);
     renderItems.push_back(new RenderItem(panHandleShape, panHandle, PxVec4(0.0f, 0.0f, 0.0f, 1.0f)));
-
+    rigidStatics.push_back(panHandle);
 }
 
 void Kitchen::setupCamera()
@@ -187,7 +229,10 @@ void Kitchen::setupCamera()
 
 void Kitchen::addOil() 
 {
-    if (oilLevel >= 10) return; // limite
+    if (oilLevel >= 10) {
+        oiled = true;
+        return;
+    }
 
     // Dimensiones ajustadas a la sartén
     float oilHeight = (1.0f / 3.0f) * (oilLevel + 1);
@@ -199,21 +244,23 @@ void Kitchen::addOil()
     const PxVec4 color(1.0f, 0.8f, 0.0f, 1.0f);            // Amarillo aceitoso
     PxBoxGeometry oilGeometry(panWidth / 2, oilHeight / 2, panDepth / 2);
 
-    const Particle* oil = new Particle(position, PxVec3(0, 0, 0), 1.0, color, oilGeometry, true);
+    Particle* oil = new Particle(position, PxVec3(0, 0, 0), 1.0, color, oilGeometry, true);
+
+    renderItems.push_back(oil->getRenderItem());
 
     oilLevel++;
 }
 
 void Kitchen::addPotatoes()
 {
+    if (!oiled) return;
     if (potatoes >= maxPotatoes) return;
 
     RigidBody* r = buoySystem->generateFloatingPotato(physics, scene);
-    
-    if (pSystem) pSystem->addRigidBody(r); // para que tengan gravedad
+    r->setRatio(50);
 
     potatoesB.push_back(r);
-
+    
     r->isCooking = true;
 
     potatoes++;
@@ -221,6 +268,8 @@ void Kitchen::addPotatoes()
 
 void Kitchen::addSalt()
 {
+    if (salt >= 15) return;
+
     const float radius = 5.0f;
     const float height = 20.0f; 
     const float mass = 5.0f;  
@@ -235,7 +284,7 @@ void Kitchen::addSalt()
 
         // tensor de inercia aleatorio
         const PxVec3 inertiaTensor(
-            0.05f + static_cast<float>(rand()) / RAND_MAX * 0.2f, // Entre 0.05 y 0.15
+            0.05f + static_cast<float>(rand()) / RAND_MAX * 0.2f, // Entre 0.05 y 0.2
             0.05f + static_cast<float>(rand()) / RAND_MAX * 0.2f,
             0.05f + static_cast<float>(rand()) / RAND_MAX * 0.2f
         );
@@ -244,8 +293,14 @@ void Kitchen::addSalt()
 
         RigidBody* salt = new RigidBody(physics, scene, geometry, PxTransform(position), mass, inertiaTensor, PxVec3(0, -2, 0), color);
 
+        salt->setLifeTime(15);
+        salt->setRatio(50);
+
+        pSystem->addRigidBody(salt);
         rigidBodies.push_back(salt);
     }
+
+    salt++;
 }
 
 PxVec4 Kitchen::calculatePotatoColor(float elapsedTime)
@@ -282,6 +337,8 @@ void Kitchen::checkPanLimits()
             // Eliminar del sistema de flotación
             buoySystem->removeRigidBody(potato);
 
+            pSystem->addRigidBody(potato);
+
             // Detener el cambio de color (desactivar cocción)
             potato->isCooking = false;
 
@@ -294,19 +351,82 @@ void Kitchen::checkPanLimits()
     }
 }
 
+void Kitchen::checkExtinguisherUsingTime(double t)
+{
+    if (extinguisher) {
+        extinguisherTime += t;
+
+        if (extinguisherTime >= extinguisherThreshold) {
+            for (auto gen : fireGenerators) {
+                fireSystem->destroyGenerator(gen);
+            }
+            fireGenerators.clear();
+        }
+    }
+}
+
 void Kitchen::generateFire(const PxVec3& position) 
 {
-    fireSystem->addGenerator(NORMAL,
-        position + PxVec3(0,3,0), // encima de la patata
-        PxVec3(0, 5, 0),         // Dirección hacia arriba
-        50,                       // Tasa de generación
-        PxVec3(1,1,1),          // Desviación de velocidad
-        10,                       // Rango
-        5,                        // Rango de spawn
-        GenDistribution::NORMALDIST, // Distribución normal
-        50,                       // Ratio de partículas
-        5,                         // Vida útil de las partículas
-        30                          // radio vivo
-    );
+    if (!canGenerateFire) return;
 
+    fireGenerators.push_back(
+        fireSystem->addGenerator(NORMAL,
+            position + PxVec3(0, 3, 0), // encima de la patata
+            PxVec3(0, 5, 0),         // Dirección hacia arriba
+            5,                       // Tasa de generación
+            PxVec3(1, 1, 1),          // Desviación de velocidad
+            10,                       // Rango
+            5,                        // Rango de spawn
+            GenDistribution::NORMALDIST, // Distribución normal
+            50,                       // Ratio de partículas
+            15,                         // Vida útil de las partículas
+            30,                          // radio vivo
+            true                // tipo fire
+        ));
 }
+
+void Kitchen::useExtinguisher()
+{
+    if (extinguisher) {
+        // Apagar el extintor
+        if (extinguisherGenerator != nullptr) {
+            fireSystem->destroyGenerator(extinguisherGenerator);
+            extinguisherGenerator = nullptr;
+        }
+        extinguisher = false;
+        extinguisherTime = 0.0f;
+        canGenerateFire = true;
+    }
+    else {
+        // Encender el extintor
+        extinguisherGenerator = fireSystem->addGenerator(UNIFORME,
+            GetCamera()->getEye() + PxVec3(0, -20, 0), // Posición del generador
+            PxVec3(0, 0, 0),                          // Velocidad inicial
+            15,                                       // Tasa de generación
+            PxVec3(0, 0, 0),                          // Sin desviación inicial
+            10,                                       // Rango de emisión
+            3,                                        // Spawn range
+            GenDistribution::UNIFORMDIST,             // Distribución uniforme
+            200,                                      // Ratio
+            5,                                        // Vida útil
+            10,                                       // Radio vivo
+            false);                                   // No es tipo fuego
+
+        extinguisher = true;
+        canGenerateFire = false;
+    }
+}
+
+void Kitchen::endCooking()
+{
+    Scene* scene = game->getScene(1);
+
+    if (Result* result = static_cast<Result*>(scene)) {
+        result->setPotatoes(potatoesB);
+        potatoesB.clear();
+        potatoes = 0;
+        game->setActiveScene(1);
+    }
+}
+
+

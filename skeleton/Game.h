@@ -11,7 +11,9 @@ public:
     void setActiveScene(int index);
     void update(double t);
     void keyPressed(unsigned char key, const PxTransform& camera);
+    Scene* getScene(int index) const;
 
+    
 
 private:
     std::vector<Scene*> scenes;

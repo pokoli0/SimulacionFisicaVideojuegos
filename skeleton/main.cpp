@@ -17,6 +17,7 @@
 
 #include "Game.h"
 #include "Kitchen.h"
+#include "Result.h"
 
 #include <iostream>
 
@@ -82,7 +83,7 @@ void initPhysics(bool interactive)
 
 	// --- Creacion de escena ---
 	PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
-	sceneDesc.gravity = PxVec3(0.0f, -9.8f, 0.0f); // Importante!!!
+	//sceneDesc.gravity = PxVec3(0.0f, -9.8f, 0.0f); // Importante - yo se la aplico con mi sistema
 	gDispatcher = PxDefaultCpuDispatcherCreate(2);
 	sceneDesc.cpuDispatcher = gDispatcher;
 	sceneDesc.filterShader = contactReportFilterShader;
@@ -196,11 +197,16 @@ void initPhysics(bool interactive)
 
 	game = new Game(gPhysics, gScene);
 
-	Kitchen* kitchen = new Kitchen(gPhysics, gScene);
+	Kitchen* kitchen = new Kitchen(game, gPhysics, gScene);
 	kitchen->setDefaultMaterial(gMaterial);
 
 	game->addScene(kitchen);
-	game->setActiveScene(0);
+
+	Result* result = new Result(game, gPhysics, gScene);
+	result->setDefaultMaterial(gMaterial);
+	game->addScene(result);
+
+	game->setActiveScene(0); // empieza en cocina
 }
 
 // Function to configure what happens in each step of physics
@@ -273,24 +279,24 @@ void keyPress(unsigned char key, const PxTransform& camera) //input
 	switch(toupper(key))
 	{
 	case 'B': 
-		InstanciaParticula();
+		//InstanciaParticula();
 		break;
 
 	case 'E': 
-		pSystem->addExplosion(
-			PxVec3(0,0,0),	 // Centro de la explosión
-			5000,            // Intensidad
-			100,			 // Radio
-			1.0f             // Tau
-		);
+		//pSystem->addExplosion(
+		//	PxVec3(0,0,0),	 // Centro de la explosión
+		//	5000,            // Intensidad
+		//	100,			 // Radio
+		//	1.0f             // Tau
+		//);
 		break;
 
 	case 'Q':
-		pSystem->removeForce(ForceType::GRAVITY);
+		//pSystem->removeForce(ForceType::GRAVITY);
 		break;
 	
 	case 'O':
-		if(pSystem) pSystem->addGravity(PxVec3(0, 9.8, 0)); // Hacia arriba
+		//if(pSystem) pSystem->addGravity(PxVec3(0, 9.8, 0)); // Hacia arriba
 		break;
 
 	default:

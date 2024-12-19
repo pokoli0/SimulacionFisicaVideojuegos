@@ -56,6 +56,8 @@ public:
 
 	void setVisible(bool v) { visible = v; }
 
+	RenderItem* getRenderItem() { return renderItem; }
+
 protected:
 	list<Particle*>::iterator iterator;
 

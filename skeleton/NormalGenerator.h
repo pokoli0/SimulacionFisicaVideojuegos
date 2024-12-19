@@ -8,7 +8,7 @@ using namespace physx;
 class NormalGenerator : public ParticleGenerator
 {
 public:
-	NormalGenerator(Particle* p, float rate, PxVec3 desv, float spawnR, GenDistribution dist, float ratio);
+	NormalGenerator(Particle* p, float rate, PxVec3 desv, float spawnR, GenDistribution dist, float ratio, bool f);
 	~NormalGenerator();
 	Particle* emit() override;
 
@@ -19,6 +19,8 @@ private:
 	std::vector<Particle*> particles;
 
 	float particlesRatio;
+
+	bool fire;
 };
 
 using nd = normal_distribution<float>;

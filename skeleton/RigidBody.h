@@ -5,7 +5,7 @@
 
 #include <list>
 
-//class ParticleSystem;
+class ParticleSystem;
 
 using namespace physx;
 using namespace std;
@@ -25,6 +25,16 @@ public:
 
     ~RigidBody();
 
+    void isAlive(double t, ParticleSystem& system);
+    bool updateLifeTime(double t);
+    bool isOnRatio();
+
+    void setLifeTime(double time) { lifeTime = time; }
+    double getLifeTime() const { return lifeTime; }
+
+    void setCenter(const PxVec3& c) { center = c; }
+    void setRatio(float r) { ratio = r; }
+
     // Métodos para acceder al cuerpo dinámico
     PxRigidDynamic* getBody() const { return body; }
 
@@ -33,6 +43,7 @@ public:
     std::list<RigidBody*>::iterator getIterator() const { return iterator; }
     void setIterator(list<RigidBody*>::iterator i) { iterator = i; }
 
+    RenderItem* getRenderItem() { return renderItem; }
 
     bool isCooking = false;
     bool isOnFire = false;
@@ -45,7 +56,9 @@ private:
 
     list<RigidBody*>::iterator iterator;
 
-
+    double lifeTime = -1.0; // Vida útil del sólido, -1 significa infinito
+    PxVec3 center = PxVec3(0, 0, 0);         // Centro de referencia para el rango
+    float ratio = 1000; // Rango alto por defecto
 
 
 };

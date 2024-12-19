@@ -28,6 +28,9 @@ public:
 	// getters
 	float getParticlePerSecond() const { return particlePerSecond; }
 
+	list<ParticleGenerator*>::iterator getIterator() const { return iterator; }
+	void setIterator(list<ParticleGenerator*>::iterator i) { iterator = i; }
+
 protected:
 	mt19937 randomizer;
 	float particlePerSecond;
@@ -37,6 +40,8 @@ protected:
 
 	// particula a instanciar
 	Particle particle;
+
+	list<ParticleGenerator*>::iterator iterator;
 
 };
 

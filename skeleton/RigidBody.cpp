@@ -1,6 +1,9 @@
 #include "RigidBody.h"
 #include <iostream>
 
+#include "ParticleSystem.h"
+
+
 RigidBody::RigidBody(PxPhysics* physics, PxScene* scene)
 {
     body = physics->createRigidDynamic(PxTransform(0,0,0));
@@ -74,8 +77,30 @@ RigidBody::RigidBody(PxPhysics* physics, PxScene* scene, const PxGeometry& geome
 
 RigidBody::~RigidBody()
 {
-    if (renderItem) delete renderItem;
+    if (renderItem) {
+        DeregisterRenderItem(renderItem);
+        delete renderItem;
+    }
     if (body) body->release();
+}
+
+void RigidBody::isAlive(double t, ParticleSystem& system) {
+    if (updateLifeTime(t) || !isOnRatio()) {
+        system.destroyRigidBody(this);
+    }
+}
+
+bool RigidBody::updateLifeTime(double t) {
+    if (lifeTime > 0) {
+        lifeTime -= t;
+        return (lifeTime <= 0);
+    }
+    return false; // Si lifetime es -1, no se destruye por tiempo.
+}
+
+bool RigidBody::isOnRatio() {
+    const PxVec3 position = body->getGlobalPose().p;
+    return (position - center).magnitude() < ratio;
 }
 
 void RigidBody::setColor(const PxVec4& newColor)

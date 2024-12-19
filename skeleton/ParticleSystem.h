@@ -52,8 +52,9 @@ public:
 	void removeRigidBody(RigidBody* r); // para que no se le apliquen las fuerzas
 
 
-	void addGenerator(GeneratorType type, PxVec3 pos, PxVec3 direction, float rate, PxVec3 desv, 
-		float range, float spawnR, GenDistribution sp, float rat, float pRatio, float lifetime = 10.0f);
+	ParticleGenerator* addGenerator(GeneratorType type, PxVec3 pos, PxVec3 direction, float rate, PxVec3 desv, 
+		float range, float spawnR, GenDistribution sp, float rat, float pRatio, float lifetime, bool fire);
+	void destroyGenerator(ParticleGenerator* gen);
 
 	void addGravity(PxVec3 g);
 	void addWind(PxVec3 windVelocity, float k1, float k2 = 0.0f, float duration = -1.0f);
@@ -83,7 +84,7 @@ private:
 	list<Particle*> pList;
 	vector<Particle*> pToErase;
 
-	vector<ParticleGenerator*> gList;
+	list<ParticleGenerator*> gList;
 	vector<ParticleGenerator*> gToErase;
 
 	// Fuerzas
@@ -94,6 +95,7 @@ private:
 	list<RigidBody*> rList;
 	vector<RigidBody*> rToErase;
 
-
+	bool windActive = false;
+	WindForce* windForce = nullptr;
 };
 

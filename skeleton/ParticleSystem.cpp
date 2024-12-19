@@ -23,7 +23,7 @@ ParticleSystem::~ParticleSystem()
         f = nullptr;
     }
     for (auto r : rList) {
-        //delete r;
+        delete r;
         r = nullptr;
     }
 
@@ -35,6 +35,39 @@ ParticleSystem::~ParticleSystem()
 
 void ParticleSystem::update(double t)
 {
+    // Eliminar partículas y generadores inactivos
+    for (auto p : pToErase) {
+        auto it = std::find(pList.begin(), pList.end(), p);
+        if (it != pList.end()) {
+            pList.erase(it);
+            delete p;
+        }
+    }
+
+    for (auto f : fToErase) {
+        auto it = std::find(fList.begin(), fList.end(), f);
+        if (it != fList.end()) {
+            fList.erase(it);
+            delete f;
+        }
+    }
+
+    for (auto r : rToErase) {
+        auto it = std::find(rList.begin(), rList.end(), r);
+        if (it != rList.end()) {
+            rList.erase(it);
+            delete r;
+        }
+    }
+
+    for (auto g : gToErase) {
+        auto it = std::find(gList.begin(), gList.end(), g);
+        if (it != gList.end()) {
+            gList.erase(it);
+            delete g;
+        }
+    }
+
     pToErase.clear();
     fToErase.clear();
     gToErase.clear();
@@ -53,7 +86,7 @@ void ParticleSystem::update(double t)
             // Reiniciar aceleración a cero
             (*it)->setAcceleration(PxVec3(0, 0, 0));
 
-            // Aplicar fuerzas (como gravedad) a la aceleracion
+            // Aplicar fuerzas
             for (auto f : fList) {
                 if (f && f->isAlive()) {
                     const PxVec3 force = f->calculateForce(*it);
@@ -69,49 +102,20 @@ void ParticleSystem::update(double t)
     }
 
     // Actualizar sólidos rígidos
-    for (RigidBody* rb : rList) {
-        if (rb) {
-            rb->getBody()->clearForce(PxForceMode::eFORCE);
+    for (auto it = rList.begin(); it != rList.end(); ) {
+        if (*it) {
+            (*it)->getBody()->clearForce(PxForceMode::eFORCE);
 
+            // Aplicar fuerzas
             for (auto f : fList) {
                 if (f && f->isAlive()) {
-                    const PxVec3 force = f->calculateForce(rb);
-                    rb->getBody()->addForce(force);
+                    PxVec3 force = f->calculateForce(*it);
+                    (*it)->getBody()->addForce(force);
                 }
             }
-        }
-    }
 
-    // Eliminar partículas y generadores inactivos
-    for (auto p : pToErase) {
-        auto it = std::find(pList.begin(), pList.end(), p);
-        if (it != pList.end()) {
-            pList.erase(it);
-            delete p;
-        }
-    }
-
-    for (auto f : fToErase) {
-        auto it = std::find(fList.begin(), fList.end(), f);
-        if (it != fList.end()) {
-            fList.erase(it);
-            delete f;
-        }
-    }
-
-    for (auto g : gToErase) {
-        auto it = std::find(gList.begin(), gList.end(), g);
-        if (it != gList.end()) {
-            gList.erase(it);
-            delete g;
-        }
-    }
-
-    for (auto r : rToErase) {
-        auto it = std::find(rList.begin(), rList.end(), r);
-        if (it != rList.end()) {
-            rList.erase(it);
-            delete r;
+            (*it)->isAlive(t, *this);
+            ++it;
         }
     }
 }
@@ -151,8 +155,8 @@ void ParticleSystem::removeRigidBody(RigidBody* r)
 
 
 #pragma region Generador
-void ParticleSystem::addGenerator(GeneratorType type, PxVec3 pos, PxVec3 direction, float rate, PxVec3 desv, 
-    float range, float spawnR, GenDistribution sp, float rat, float lifetime, float pRatio)
+ParticleGenerator* ParticleSystem::addGenerator(GeneratorType type, PxVec3 pos, PxVec3 direction, float rate, PxVec3 desv,
+    float range, float spawnR, GenDistribution sp, float rat, float pRatio, float lifetime, bool fire)
 {
     Particle p = Particle();
     p.setPosition(pos);
@@ -162,13 +166,27 @@ void ParticleSystem::addGenerator(GeneratorType type, PxVec3 pos, PxVec3 directi
     p.setRatio(rat);
     p.setLifeTime(lifetime);
 
+    ParticleGenerator* newGen = nullptr;
     if (type == UNIFORME) {
-        gList.push_back(new UniformGenerator(&p, rate, range, spawnR, sp));
+        newGen = new UniformGenerator(&p, rate, range, spawnR, sp, fire);
     }
     else { // Generador normal
-        gList.push_back(new NormalGenerator(&p, rate, desv, spawnR, sp, pRatio));
+        newGen = new NormalGenerator(&p, rate, desv, spawnR, sp, pRatio, fire);
+    }
+
+    gList.push_back(newGen);
+    newGen->setIterator(--gList.end());
+
+    return newGen;
+}
+
+void ParticleSystem::destroyGenerator(ParticleGenerator* gen)
+{
+    if (gen != nullptr && gen->getIterator() != gList.end()) {
+        gToErase.push_back(gen);
     }
 }
+
 #pragma endregion
 
 #pragma region Fuerzas
@@ -203,16 +221,16 @@ void ParticleSystem::addBuoyancy(float height, float volume, float density)
 
 void ParticleSystem::toggleWind()
 {
-    //if (windActive) {
-    //    removeForce(ForceType::WIND);
-    //    windActive = false;
-    //    windForce = nullptr;
-    //}
-    //else {
-    //    windForce = new WindForce(PxVec3(0, 0, 20), 0.5f, 0.1f, -1.0f); // Viento hacia la derecha
-    //    fList.push_back(windForce);
-    //    windActive = true;
-    //}
+    if (windActive) {
+        removeForce(ForceType::WIND);
+        windActive = false;
+        windForce = nullptr;
+    }
+    else {
+        windForce = new WindForce(PxVec3(0, 0, 30), 0.5f, 0.1f, -1.0f); // Viento hacia la derecha
+        fList.push_back(windForce);
+        windActive = true;
+    }
 }
 
 void ParticleSystem::removeForce(ForceType type) {
@@ -291,15 +309,15 @@ RigidBody* ParticleSystem::generateFloatingPotato(PxPhysics* physics, PxScene* s
     const float panHeight = 5.0f;  // Altura base donde flotan las patatas
 
     // Generar posición aleatoria dentro de la sartén
-    const float x = (static_cast<float>(rand()) / RAND_MAX) * panWidth - (panWidth / 2); // Entre -panWidth/2 y panWidth/2
-    const float z = (static_cast<float>(rand()) / RAND_MAX) * panDepth - (panDepth / 2); // Entre -panDepth/2 y panDepth/2
+    const float x = (static_cast<float>(rand()) / RAND_MAX) * panWidth - (panWidth / 2);
+    const float z = (static_cast<float>(rand()) / RAND_MAX) * panDepth - (panDepth / 2);
     const PxVec3 position(x, panHeight, z); // Posición de la patata
 
     // Color fijo para la patata (amarillo claro)
     const PxVec4 color(1, 1, 0, 1);
 
     // Tamaño fijo de las patatas
-    const PxBoxGeometry geometry(1.0f, 1.0f, 1.0f);
+    const PxBoxGeometry geometry(2.0f, 0.5f, 0.5f);
 
     RigidBody* r = new RigidBody(physics, sc, geometry, PxTransform(position), 1500, PxVec3(0, 0, 0), color);
 
