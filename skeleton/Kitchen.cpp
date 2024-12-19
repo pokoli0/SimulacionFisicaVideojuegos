@@ -8,10 +8,12 @@ Kitchen::Kitchen(PxPhysics* physics, PxScene* scene)
 {
     pSystem = new ParticleSystem();
     buoySystem = new ParticleSystem();
+    fireSystem = new ParticleSystem();
 
     systems.push_back(pSystem);
     systems.push_back(buoySystem);
-
+    systems.push_back(fireSystem);
+   
 
     oilLevel = 0;
 
@@ -185,7 +187,7 @@ void Kitchen::setupCamera()
 
 void Kitchen::addOil() 
 {
-    if (oilLevel >= 12) return; // limite
+    if (oilLevel >= 10) return; // limite
 
     // Dimensiones ajustadas a la sartén
     float oilHeight = (1.0f / 3.0f) * (oilLevel + 1);
@@ -193,11 +195,11 @@ void Kitchen::addOil()
     float panDepth = 20.0f;
 
     // Crear la partícula que representa el aceite
-    PxVec3 position(0, -4.0f + oilHeight / 2.0f, 0); // Ajustar al nivel correspondiente
-    PxVec4 color(1.0f, 0.9f, 0.0f, 1.0f);            // Amarillo aceitoso
+    const PxVec3 position(0, -4.0f + oilHeight / 2.0f, 0); // Ajustar al nivel correspondiente
+    const PxVec4 color(1.0f, 0.8f, 0.0f, 1.0f);            // Amarillo aceitoso
     PxBoxGeometry oilGeometry(panWidth / 2, oilHeight / 2, panDepth / 2);
 
-    Particle* oil = new Particle(position, PxVec3(0, 0, 0), 1.0, color, oilGeometry, true);
+    const Particle* oil = new Particle(position, PxVec3(0, 0, 0), 1.0, color, oilGeometry, true);
 
     oilLevel++;
 }
@@ -245,7 +247,6 @@ void Kitchen::addSalt()
         rigidBodies.push_back(salt);
     }
 }
-
 
 PxVec4 Kitchen::calculatePotatoColor(float elapsedTime)
 {
@@ -295,8 +296,8 @@ void Kitchen::checkPanLimits()
 
 void Kitchen::generateFire(const PxVec3& position) 
 {
-    pSystem->addGenerator(NORMAL,
-        position,                 // Posición del generador
+    fireSystem->addGenerator(NORMAL,
+        position + PxVec3(0,3,0), // encima de la patata
         PxVec3(0, 5, 0),         // Dirección hacia arriba
         50,                       // Tasa de generación
         PxVec3(1,1,1),          // Desviación de velocidad

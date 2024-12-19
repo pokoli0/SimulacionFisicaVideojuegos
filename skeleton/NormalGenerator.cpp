@@ -39,7 +39,7 @@ Particle* NormalGenerator::emit()
     p->setVelocity(randomVelocity);
     p->setPosition(calculatePosition());
     p->setRatio(particlesRatio);
-    p->setColor(color); // Asigna el color generado
+    p->setColor(color);
 
     particles.push_back(p);
 

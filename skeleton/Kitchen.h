@@ -41,6 +41,9 @@ private:
     // Encargado de la flotacion
     ParticleSystem* buoySystem = nullptr;
 
+    // Encargado del fuego: sin gravedad, pero con viento
+    ParticleSystem* fireSystem = nullptr;
+
     std::vector<ParticleSystem*> systems;
 
     PxMaterial* defaultMaterial = nullptr;

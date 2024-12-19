@@ -6,6 +6,7 @@ ParticleGenerator::ParticleGenerator(Particle* p, float particleSecond, float sp
 {
     random_device rd;
     randomizer.seed(rd());
+
 }
 
 PxVec3 ParticleGenerator::calculatePosition()
