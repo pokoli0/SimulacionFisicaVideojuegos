@@ -52,7 +52,7 @@ void Kitchen::update(double t)
     for (auto p : potatoesB) {
         if (p->isCooking) {
             p->cookingTime += t;
-            PxVec4 newColor = calculateColor(p->cookingTime);
+            PxVec4 newColor = calculatePotatoColor(p->cookingTime);
             p->setColor(newColor);
         }
     }
@@ -94,6 +94,14 @@ void Kitchen::keyPressed(unsigned char key, const PxTransform& camera)
 
     case 'P':
         addPotatoes();
+        break;
+
+    case 'E':
+        //pSystem.toggleWind();
+        break;
+
+    case 'L':
+        addSalt();
         break;
 
     default:
@@ -209,14 +217,44 @@ void Kitchen::addPotatoes()
     potatoes++;
 }
 
-PxVec4 Kitchen::calculateColor(float elapsedTime)
+void Kitchen::addSalt()
+{
+    const float radius = 5.0f;
+    const float height = 20.0f; 
+    const float mass = 5.0f;  
+    const PxVec4 color(1.0f, 1.0f, 1.0f, 1.0f); 
+
+    for (int i = 0; i < saltDensity; ++i) 
+    {
+        float angle = i * (2.0f * PxPi / saltDensity);
+        const float x = radius * cos(angle);
+        const float z = radius * sin(angle);
+        PxVec3 position(x, height, z);
+
+        // tensor de inercia aleatorio
+        const PxVec3 inertiaTensor(
+            0.05f + static_cast<float>(rand()) / RAND_MAX * 0.2f, // Entre 0.05 y 0.15
+            0.05f + static_cast<float>(rand()) / RAND_MAX * 0.2f,
+            0.05f + static_cast<float>(rand()) / RAND_MAX * 0.2f
+        );
+
+        PxBoxGeometry geometry(0.2f, 0.2f, 0.2f);
+
+        RigidBody* salt = new RigidBody(physics, scene, geometry, PxTransform(position), mass, inertiaTensor, PxVec3(0, -2, 0), color);
+
+        rigidBodies.push_back(salt);
+    }
+}
+
+
+PxVec4 Kitchen::calculatePotatoColor(float elapsedTime)
 {
     // Rango de tiempo (por ejemplo, de 0 a 10 segundos)
     const float maxTime = 10.0f;
 
     // Colores inicial y final
-    PxVec4 startColor(1.0f, 1.0f, 0.0f, 1.0f);  // Amarillo claro
-    PxVec4 endColor(0.5f, 0.3f, 0.0f, 1.0f);    // Marrón
+    const PxVec4 startColor(1.0f, 1.0f, 0.0f, 1.0f);  // Amarillo claro
+    const PxVec4 endColor(0.5f, 0.3f, 0.0f, 1.0f);    // Marrón
 
     // Interpolación lineal
     float alpha = (elapsedTime / maxTime < 1.0f) ? elapsedTime / maxTime : 1.0f;
@@ -257,7 +295,7 @@ void Kitchen::checkPanLimits()
 
 void Kitchen::generateFire(const PxVec3& position) 
 {
-    buoySystem->addGenerator(NORMAL,
+    pSystem->addGenerator(NORMAL,
         position,                 // Posición del generador
         PxVec3(0, 5, 0),         // Dirección hacia arriba
         50,                       // Tasa de generación

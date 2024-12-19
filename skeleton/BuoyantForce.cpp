@@ -7,7 +7,7 @@ BuoyantForce::BuoyantForce(float h, float V, float d)
     _volume = V;
     _liquid_density = d;
 
-    _liquid_particle = new Particle(PxVec3(0, 0, 0), PxVec3(0, 0, 0), 1, PxVec4(0, 1, 1, 1), PxBoxGeometry(10,3,10), false);
+    _liquid_particle = new Particle(PxVec3(0, -3, 0), PxVec3(0, 0, 0), 1, PxVec4(0, 1, 1, 1), PxBoxGeometry(10,3,10), false);
 }
 
 BuoyantForce::~BuoyantForce()

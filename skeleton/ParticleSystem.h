@@ -63,6 +63,8 @@ public:
 	void addSpring(Particle* other);
 	void addBuoyancy(float height, float volume, float density);
 
+	void toggleWind();
+
 	void removeForce(ForceType type);
 
 	// muelles

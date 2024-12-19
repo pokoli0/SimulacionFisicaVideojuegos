@@ -201,6 +201,20 @@ void ParticleSystem::addBuoyancy(float height, float volume, float density)
     fList.push_back(new BuoyantForce(height, volume, density));
 }
 
+void ParticleSystem::toggleWind()
+{
+    //if (windActive) {
+    //    removeForce(ForceType::WIND);
+    //    windActive = false;
+    //    windForce = nullptr;
+    //}
+    //else {
+    //    windForce = new WindForce(PxVec3(0, 0, 20), 0.5f, 0.1f, -1.0f); // Viento hacia la derecha
+    //    fList.push_back(windForce);
+    //    windActive = true;
+    //}
+}
+
 void ParticleSystem::removeForce(ForceType type) {
     for (auto it = fList.begin(); it != fList.end(); ++it) {
         if ((*it)->getForceType() == type) {
@@ -272,24 +286,25 @@ void ParticleSystem::generateRBSpringDemo(PxPhysics* physics, PxScene* sc)
 RigidBody* ParticleSystem::generateFloatingPotato(PxPhysics* physics, PxScene* sc)
 {
     // Dimensiones de la sartén
-    const float panWidth = 20.0f;  // Ancho total de la sartén
-    const float panDepth = 20.0f;  // Profundidad total de la sartén
-    const float panHeight = 4.0f; // Altura base donde flotan las patatas
+    const float panWidth = 15;  // Ancho total de la sartén
+    const float panDepth = 15;  // Profundidad total de la sartén
+    const float panHeight = 5.0f;  // Altura base donde flotan las patatas
 
     // Generar posición aleatoria dentro de la sartén
     const float x = (static_cast<float>(rand()) / RAND_MAX) * panWidth - (panWidth / 2); // Entre -panWidth/2 y panWidth/2
     const float z = (static_cast<float>(rand()) / RAND_MAX) * panDepth - (panDepth / 2); // Entre -panDepth/2 y panDepth/2
-
     const PxVec3 position(x, panHeight, z); // Posición de la patata
-    const PxVec4 color(1, 1, 0, 1);         // Amarillo claro
 
-    const PxBoxGeometry geometry(3.0f, 1.0f, 1.0f); // Tamaño de la patata
+    // Color fijo para la patata (amarillo claro)
+    const PxVec4 color(1, 1, 0, 1);
 
-    // Crear el cuerpo rígido para la patata
+    // Tamaño fijo de las patatas
+    const PxBoxGeometry geometry(1.0f, 1.0f, 1.0f);
+
     RigidBody* r = new RigidBody(physics, sc, geometry, PxTransform(position), 1500, PxVec3(0, 0, 0), color);
-    addRigidBody(r);
 
-    // Agregar fuerza de flotación
+    // Añadir al sistema de flotación
+    addRigidBody(r);
     addBuoyancy(10, 10, 1000);
 
     return r;

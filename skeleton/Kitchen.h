@@ -21,8 +21,9 @@ public:
     // ingredientes
     void addOil();
     void addPotatoes();
+    void addSalt();
 
-    PxVec4 calculateColor(float elapsedTime);
+    PxVec4 calculatePotatoColor(float elapsedTime);
 
     // Comprobacion de si la patata esta en el area de la sarten
     void checkPanLimits();
@@ -54,5 +55,7 @@ private:
 
     int potatoes = 0;
     int maxPotatoes = 15;
+
+    int saltDensity = 15;
 
 };

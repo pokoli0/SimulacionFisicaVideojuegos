@@ -48,15 +48,8 @@ RigidBody::RigidBody(PxPhysics* physics, PxScene* scene, const PxGeometry& geome
 
 RigidBody::RigidBody(PxPhysics* physics, PxScene* scene, const PxGeometry& geometry, PxTransform transform, float mass, PxVec3 inertiaTensor, PxVec3 initialVelocity, PxVec4 color)
 {
-    if (!physics || !scene) {
-        throw std::runtime_error("Physics o Scene no pueden ser nulos");
-    }
-
     // Crear un cuerpo rígido dinámico
     PxRigidDynamic* new_solid = physics->createRigidDynamic(transform);
-    if (!new_solid) {
-        throw std::runtime_error("Error: No se pudo crear PxRigidDynamic");
-    }
 
     // Configurar velocidades iniciales
     new_solid->setLinearVelocity(initialVelocity);
@@ -64,9 +57,6 @@ RigidBody::RigidBody(PxPhysics* physics, PxScene* scene, const PxGeometry& geome
 
     // Crear la forma asociada
     PxShape* sh = CreateShape(geometry);
-    if (!sh) {
-        throw std::runtime_error("Error: No se pudo crear PxShape");
-    }
     new_solid->attachShape(*sh);
 
     // Configurar la masa y los tensores de inercia manualmente
